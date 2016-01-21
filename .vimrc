@@ -112,9 +112,10 @@ endfunction
 function! LatexOptions()
     setlocal foldmethod=expr
     setlocal foldcolumn=4
-    setlocal foldexpr=LatexFolds()
+    "setlocal foldexpr=LatexFolds()
 endfunction
 
+let g:LatexBox_Folding=1
 let g:LatexBox_latexmk_async = 1
 let g:LatexBox_viewer = "open -a Skim"
 let g:Tex_ViewRule_pdf = 'Skim'
@@ -231,7 +232,9 @@ nnoremap <leader>b :CtrlPBuffer<CR>
 let g:airline_powerline_fonts = 1
 let g:airline#extensions#tabline#enabled = 1
 " Neco-ghc
-setlocal omnifunc=necoghc#omnifunc
+augroup Haskell
+    autocmd FileType *.hs setlocal omnifunc=necoghc#omnifunc
+augroup Haskell
 " YCM
 nnoremap <leader>g :YcmCompleter GoTo<CR>
 nnoremap <leader>D :YcmDiag<CR>
