@@ -31,7 +31,7 @@ Plugin 'LaTeX-Box-Team/LaTeX-Box'
 Plugin 'tpope/vim-surround'
 Plugin 'junegunn/vim-easy-align'
 Plugin 'rust-lang/rust.vim'
-Plugin 'racer-rust/vim-racer'
+"Plugin 'racer-rust/vim-racer'
 Plugin 'Raimondi/delimitMate'
 
 call vundle#end()            " required

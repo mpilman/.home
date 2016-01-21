@@ -214,12 +214,19 @@ def SourceLang(filename, database):
 
     return lang
 
+def FindClang():
+    res = "clang"
+    clangFile = "~/.clang-exec"
+    if os.path.exists(clangFile):
+        with open(clangFile, 'r') as f:
+            res = str(f.readline()).strip()
+    return res
 
 def DefaultIncludes(filename, flags):
-
     f = open('/dev/null', 'rw')
+    clangExec = FindClang()
     proc = subprocess.Popen(
-        ["clang", "-v", "-E"] + SourceLang(filename, False) + ["-"],
+        [clangExec, "-v", "-E"] + SourceLang(filename, False) + ["-"],
         stdin=f, stderr=subprocess.PIPE,
         stdout=f)
 
