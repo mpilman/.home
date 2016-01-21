@@ -248,6 +248,7 @@ augroup END
 let g:ycm_extra_conf_vim_data = ['getcwd()']
 let g:ycm_global_ycm_extra_conf = '~/.vim/ycm_extra_conf.py'
 let g:ycm_semantic_triggers = {'haskell' : ['.']}
+let g:ycm_filetype_blacklist = {'tex' : 1}
 "
 " Semantic Highlight
 nnoremap <leader>s :SemanticHighlight<CR>
