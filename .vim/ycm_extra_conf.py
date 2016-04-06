@@ -156,7 +156,6 @@ def GuessCompilationInfoForHeader(cwd, database, filename):
 
 def GetCompilationInfoForFile(cwd, filename):
     builddir = FindBuildDir(cwd)
-    sys.stderr.write("builddir" + builddir + "\n")
     database = ycm_core.CompilationDatabase(builddir)
     final_flags = []
     if database:
@@ -216,10 +215,11 @@ def SourceLang(filename, database):
 
 def FindClang():
     res = "clang"
-    clangFile = "~/.clang-exec"
+    clangFile = "/home/mpilman/.clang-exec"
     if os.path.exists(clangFile):
         with open(clangFile, 'r') as f:
             res = str(f.readline()).strip()
+    sys.stderr.write("Use Clang: " + res + "\n")
     return res
 
 def DefaultIncludes(filename, flags):

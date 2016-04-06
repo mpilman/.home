@@ -11,16 +11,17 @@ call vundle#begin()
 " let Vundle manage Vundle, required
 Plugin 'gmarik/Vundle.vim'
 Plugin 'Valloric/YouCompleteMe'
+Plugin 'godlygeek/csapprox'
 Plugin 'vim-scripts/a.vim'
 Plugin 'kien/ctrlp.vim'
 Plugin 'bling/vim-airline'
+Plugin 'vim-airline/vim-airline-themes'
 Plugin 'terryma/vim-multiple-cursors'
 Plugin 'scrooloose/nerdtree'
 Plugin 'scrooloose/nerdcommenter'
 Plugin 'joonty/vdebug.git'
 Plugin 'tpope/vim-fugitive'
 Plugin 'tfnico/vim-gradle'
-Plugin 'nanotech/jellybeans.vim'
 Plugin 'dag/vim-fish'
 Plugin 'eagletmt/neco-ghc.git'
 Plugin 'hail2u/vim-css3-syntax'
@@ -31,13 +32,17 @@ Plugin 'LaTeX-Box-Team/LaTeX-Box'
 Plugin 'tpope/vim-surround'
 Plugin 'junegunn/vim-easy-align'
 Plugin 'rust-lang/rust.vim'
-"Plugin 'racer-rust/vim-racer'
+" Plugin 'racer-rust/vim-racer'
 Plugin 'Raimondi/delimitMate'
+Plugin 'altercation/vim-colors-solarized'
+Plugin 'nanotech/jellybeans.vim'
 
 call vundle#end()            " required
 filetype plugin indent on    " required
 
 set encoding=utf-8
+set t_Co=256
+set number
 set relativenumber
 set nocompatible
 set visualbell
@@ -48,9 +53,7 @@ set backspace=2
 set smartindent
 set smarttab
 set mouse=a
-set background=light
 set hidden
-set number
 set cinoptions=:0,g0,t0,N-s
 set scrolloff=15
 set nostartofline
@@ -58,14 +61,17 @@ set list
 set listchars=tab:▸\ ,eol:¬,extends:❯,precedes:❮
 " For tmux
 set t_ut=
+let g:solarized_termcolors=256
+let g:jellybeans_use_term_background_color=0
+set background=light
 colorscheme jellybeans
 
 let mapleader = ","
 let maplocalleader = "\\"
 
 " Man
-runtime ftplugin/man.vim
-nnoremap K :Man <cword><CR>
+" runtime ftplugin/man.vim
+" nnoremap K :Man <cword><CR>
 " eclim
 let g:EclimCompletionMethod = 'omnifunc'
 
@@ -164,7 +170,6 @@ function! DelCurrBuffer()
     bprevious
     execute 'bdelete' bufNr 
 endfunction
-nnoremap <leader>g :buffers<CR>:buffer<Space>
 nnoremap <leader>d :call DelCurrBuffer()<CR>
 nnoremap <silent> <tab> :bnext<CR>
 nnoremap <silent> <s-tab> :bprevious<CR>
@@ -218,11 +223,6 @@ set shellslash
 set grepprg=grep\ -nH\ $*
 
 nnoremap ,cd :cd %:p:h<CR>
-
-" vim Alternative
-if filereadable(".vim/a.vim")
-    :so .vim/a.vim
-endif
 
 " CTRL-P
 let g:ctrlp_working_path_mode = 'r'
