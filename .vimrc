@@ -137,11 +137,11 @@ augroup LaTeX
 augroup END
 
 " Add header to new files
-autocmd BufNewFile *.cpp so ~/.home/header.txt
-autocmd BufNewFile *.c so ~/.home/header.txt
-autocmd BufNewFile *.h so ~/.home/header.txt
-autocmd BufNewFile *.hpp so ~/.home/header.txt
-autocmd BufNewFile *.java so ~/.home/header.txt
+" autocmd BufNewFile *.cpp so ~/.home/header.txt
+" autocmd BufNewFile *.c so ~/.home/header.txt
+" autocmd BufNewFile *.h so ~/.home/header.txt
+" autocmd BufNewFile *.hpp so ~/.home/header.txt
+" autocmd BufNewFile *.java so ~/.home/header.txt
 
 " Automatically close brackets
 " inoremap ( ()<left>
