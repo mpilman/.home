@@ -10,7 +10,8 @@ call vundle#begin()
 
 " let Vundle manage Vundle, required
 Plugin 'gmarik/Vundle.vim'
-Plugin 'Valloric/YouCompleteMe'
+Plugin 'tpope/vim-sleuth'
+" Plugin 'Valloric/YouCompleteMe'
 Plugin 'godlygeek/csapprox'
 Plugin 'vim-scripts/a.vim'
 Plugin 'kien/ctrlp.vim'
@@ -42,6 +43,8 @@ Plugin 'Twinside/vim-hoogle'
 
 call vundle#end()            " required
 filetype plugin indent on    " required
+
+set rtp+=/home/mpilman/.nix-profile/share/vim-plugins/youcompleteme
 
 set encoding=utf-8
 set t_Co=256
@@ -137,11 +140,11 @@ augroup LaTeX
 augroup END
 
 " Add header to new files
-autocmd BufNewFile *.cpp so ~/.home/header.txt
-autocmd BufNewFile *.c so ~/.home/header.txt
-autocmd BufNewFile *.h so ~/.home/header.txt
-autocmd BufNewFile *.hpp so ~/.home/header.txt
-autocmd BufNewFile *.java so ~/.home/header.txt
+" autocmd BufNewFile *.cpp so ~/.home/header.txt
+" autocmd BufNewFile *.c so ~/.home/header.txt
+" autocmd BufNewFile *.h so ~/.home/header.txt
+" autocmd BufNewFile *.hpp so ~/.home/header.txt
+" autocmd BufNewFile *.java so ~/.home/header.txt
 
 " Automatically close brackets
 " inoremap ( ()<left>
@@ -236,7 +239,7 @@ set grepprg=grep\ -nH\ $*
 nnoremap ,cd :cd %:p:h<CR>
 
 " CTRL-P
-let g:ctrlp_working_path_mode = 'r'
+let g:ctrlp_working_path_mode = 'rw'
 nnoremap <leader>v :CtrlPMRUFiles<CR>
 nnoremap <leader>b :CtrlPBuffer<CR>
 " Airline

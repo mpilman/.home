@@ -5,7 +5,7 @@ ZSH=$HOME/.oh-my-zsh
 # Look in ~/.oh-my-zsh/themes/
 # Optionally, if you set this to "random", it'll load a random theme each
 # time that oh-my-zsh is loaded.
-ZSH_THEME="mpilman"
+ZSH_THEME="agnoster"
 
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
@@ -55,3 +55,5 @@ then
     export http_proxy='http://proxy.ethz.ch:3128'
     export https_proxy='http://proxy.ethz.ch:3128'
 fi
+
+. /home/mpilman/.nix-profile/etc/profile.d/nix.sh
