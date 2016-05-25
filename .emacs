@@ -33,6 +33,7 @@ Return a list of installed packages or nil for every skipped package."
  'company
  'fiplr
  'powerline
+ 'neotree
  )
 
 (require 'powerline)
@@ -94,11 +95,22 @@ Return a list of installed packages or nil for every skipped package."
 (define-key evil-normal-state-map "L" "$")
 (define-key evil-normal-state-map "H" "^")
 (define-key evil-normal-state-map (kbd "C-p") 'fiplr-find-file)
+(define-key evil-normal-state-map "\\" 'next-buffer)
+(define-key evil-normal-state-map "|" 'previous-buffer)
 
 (add-to-list 'auto-mode-alist '("\\.org\\'" . org-mode))
 (semantic-mode t)
 
 (require 'fiplr)
+
+(require 'neotree)
+(global-set-key [f8] 'neotree-toggle)
+(add-hook 'neotree-mode-hook
+	  (lambda ()
+	    (define-key evil-normal-state-map (kbd "TAB") 'neotree-enter)
+	    (define-key evil-normal-state-map (kbd "SPC") 'neotree-enter)
+	    (define-key evil-normal-state-map (kbd "RET") 'neotree-enter)
+	    (define-key evil-normal-state-map (kbd "q") 'neotree-hide)))
 
 (require 'relative-line-numbers)
 (global-relative-line-numbers-mode)
