@@ -23,12 +23,31 @@ Return a list of installed packages or nil for every skipped package."
 
 (ensure-package-installed
  'evil
+ 'evil-surround
  'evil-escape
  'labburn-theme
  'relative-line-numbers
  'evil-leader
  'helm
+ 'rtags
+ 'company
+ 'fiplr
+ 'powerline
  )
+
+(require 'powerline)
+(powerline-default-theme)
+
+(require 'rtags)
+(require 'company-rtags)
+
+(setq rtags-completions-enabled t)
+(eval-after-load 'company
+  '(add-to-list
+    'company-backends 'company-rtags))
+(setq rtags-autostart-diagnostics t)
+(rtags-enable-standard-keybindings)
+(setq rtags-use-helm t)
 
 ;;; Autocompletion for lisp
 (setq tab-always-indent 'complete)
@@ -36,6 +55,13 @@ Return a list of installed packages or nil for every skipped package."
 (setq font-lock-maximum-decoration t)
 
 (load-theme 'labburn t)
+
+;;; Mouse support in terminal
+(xterm-mouse-mode)
+(setq mouse-wheel-scroll-amount '(1 ((shift) . 1))) ;; one line at a time
+(setq mouse-wheel-progressive-speed nil) ;; don't accelerate scrolling
+(setq mouse-wheel-follow-mouse 't) ;; scroll window under mouse
+(setq scroll-step 1) ;; keyboard scroll one line at a time
 
 (require 'evil-leader)
 (global-evil-leader-mode)
@@ -45,19 +71,34 @@ Return a list of installed packages or nil for every skipped package."
 (evil-mode 1)
 (evil-escape-mode)
 
+(require 'evil-surround)
+(global-evil-surround-mode 1)
+
 (require 'ido)
 (ido-mode t)
+(setq ido-enable-flex-matching)
 
 (require 'helm-config)
+
+(require 'fiplr)
+(setq fiplr-root-markers '("Makefile"))
 
 ;;; key bindings
 (setq-default evil-escape-key-sequence "jk")
 (evil-leader/set-key
   "b" 'helm-buffers-list
-  "k" 'kill-buffer)
+  "d" 'kill-buffer
+  "g" 'rtags-find-symbol-at-point
+  "s" 'rtags-find-symbol)
+
+(define-key evil-normal-state-map "L" "$")
+(define-key evil-normal-state-map "H" "^")
+(define-key evil-normal-state-map (kbd "C-p") 'fiplr-find-file)
 
 (add-to-list 'auto-mode-alist '("\\.org\\'" . org-mode))
 (semantic-mode t)
+
+(require 'fiplr)
 
 (require 'relative-line-numbers)
 (global-relative-line-numbers-mode)
