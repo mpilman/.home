@@ -34,7 +34,17 @@ Return a list of installed packages or nil for every skipped package."
  'fiplr
  'powerline
  'neotree
+ 'hydra
+ 'rainbow-identifiers
+ 'projectile
+ 'helm-projectile
+ 'rainbow-delimiters
  )
+
+(add-hook 'prog-mode-hook #'rainbow-delimiters-mode)
+
+(require 'projectile)
+(projectile-global-mode)
 
 (require 'powerline)
 (powerline-default-theme)
@@ -50,10 +60,16 @@ Return a list of installed packages or nil for every skipped package."
 (rtags-enable-standard-keybindings)
 (setq rtags-use-helm t)
 
+;;; Load .h-files in C++-mode by default
+(add-to-list 'auto-mode-alist '("\\.h\\'" . c++-mode))
+
 ;;; Autocompletion for lisp
 (setq tab-always-indent 'complete)
 ;;; Syntax highlighting
 (setq font-lock-maximum-decoration t)
+;;; more fancy syntax highlighting
+;(add-hook 'after-init-hook 'global-color-identifiers-mode)
+(add-hook 'prog-mode-hook 'rainbow-identifiers-mode)
 
 (load-theme 'labburn t)
 
@@ -120,7 +136,10 @@ Return a list of installed packages or nil for every skipped package."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- )
+ '(custom-safe-themes
+   (quote
+    ("fa2b58bb98b62c3b8cf3b6f02f058ef7827a8e497125de0254f56e373abee088" "bffa9739ce0752a37d9b1eee78fc00ba159748f50dc328af4be661484848e476" default)))
+ '(show-paren-mode t))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -135,3 +154,60 @@ Return a list of installed packages or nil for every skipped package."
      (eshell-command 
       (format "find %s -type f -name \"*.[ch]\" | etags -" dir-name)))
 
+(defhydra hydra-rtags-menu (:color pink
+				    :hint nil)
+    "
+^Action^
+^^^^^^^^
+_rs_: find references for symbol
+_rp_: find references at point
+_d_: run diagnostics
+_gs_: goto symbol...
+_gf_: goto file...
+_f_: fixit
+_m_: rtags-menu
+_i_: print symbol info
+_p_: preprocess file
+_t_: print type under cursor
+"
+    ("rp" rtags-find-references-at-point :exit t)
+    ("rs" rtags-find-references :exit t)
+    ("gs" rtags-find-symbol :exit t)
+    ("d" rtags-diagnostics :exit t)
+    ("gf" rtags-find-file :exit t)
+    ("f" rtags-fixit :exit t)
+    ("m" rtags-imenu :exit t)
+    ("i" rtags-print-symbol-info :exit t)
+    ("p" rtags-preprocess-file :exit t)
+    ("t" rtags-symbol-type :exit t)
+    ("c" nil "cancel")
+    ("v" Buffer-menu-select "select" :color blue)
+    ("o" Buffer-menu-other-window "other-window" :color blue)
+    ("q" quit-window "quit" :color blue))
+
+(defhydra hydra-space-menu (:color pink
+				    :hint nil)
+    "
+^Action^
+^^^^^^^^
+_r_: rtags...
+_d_: Don't show dos-endings for dos-unix mixed files
+_lc_: reload config
+_ec_: edit .emacs file
+"
+    ("r" (hydra-rtags-menu/body) :exit t)
+    ("lc" (load-file "~/.emacs") :exit t)
+    ("ec" (find-file "~/.home/.emacs") :exit t)
+    ("d" (remove-dos-eol) :exit t)
+    ("c" nil "cancel")
+    ("v" Buffer-menu-select "select" :color blue)
+    ("o" Buffer-menu-other-window "other-window" :color blue)
+    ("q" quit-window "quit" :color blue))
+
+(define-key evil-normal-state-map (kbd "SPC") 'hydra-space-menu/body)
+
+(defun remove-dos-eol ()
+  "Do not show ^M in files containing mixed UNIX and DOS line endings."
+  (interactive)
+  (setq buffer-display-table (make-display-table))
+    (aset buffer-display-table ?\^M []))
