@@ -56,4 +56,8 @@ then
     export https_proxy='http://proxy.ethz.ch:3128'
 fi
 
-. /home/mpilman/.nix-profile/etc/profile.d/nix.sh
+NIX_FILE=https://mpilman@github.com/mpilman/.home.git
+if [ -e $NIX_FILE ]
+then
+    . $NIX_FILE
+fi
