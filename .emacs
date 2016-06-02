@@ -1,4 +1,4 @@
-;;; load package manager
+;; load package manager
 (require 'package)
 (add-to-list 'package-archives
 	     '("melpa" . "http://melpa.org/packages/") t)
@@ -15,6 +15,19 @@ Return a list of installed packages or nil for every skipped package."
 	   (package-install package)
 	 package)))
    packages))
+
+;;; Visible-bell also deactivites the normal bell which is annoying
+(setq visible-bell t)
+
+;;; Store backup files in tmp directory
+(setq backup-directory-alist
+      `((".*" . ,temporary-file-directory)))
+(setq auto-save-file-name-transforms
+      `((".*" ,temporary-file-directory t)))
+
+;; Make sure emacs does not create new splits all the time
+(setq split-height-threshold 1200)
+(setq split-width-threshold 2000)
 
 ;;; Make sure archive descriptions are downloaded
 (or (file-exists-p package-user-dir)
@@ -39,9 +52,17 @@ Return a list of installed packages or nil for every skipped package."
  'projectile
  'helm-projectile
  'rainbow-delimiters
+ 'company-jedi
  )
 
 (add-hook 'prog-mode-hook #'rainbow-delimiters-mode)
+
+(add-hook 'after-init-hook 'global-company-mode)
+
+;;; Python
+(defun my/python-mode-hook ()
+  (add-to-list 'company-backends 'company-jedi))
+(add-hook 'python-mode-hook 'my/python-mode-hook)
 
 (require 'projectile)
 (projectile-global-mode)
@@ -69,7 +90,7 @@ Return a list of installed packages or nil for every skipped package."
 (setq font-lock-maximum-decoration t)
 ;;; more fancy syntax highlighting
 ;(add-hook 'after-init-hook 'global-color-identifiers-mode)
-(add-hook 'prog-mode-hook 'rainbow-identifiers-mode)
+;(add-hook 'prog-mode-hook 'rainbow-identifiers-mode)
 
 (load-theme 'labburn t)
 
@@ -80,16 +101,29 @@ Return a list of installed packages or nil for every skipped package."
 (setq mouse-wheel-follow-mouse 't) ;; scroll window under mouse
 (setq scroll-step 1) ;; keyboard scroll one line at a time
 
+(defvar evil-enabled nil)
+
 (require 'evil-leader)
-(global-evil-leader-mode)
-(evil-leader/set-leader ",")
-
 (require 'evil)
-(evil-mode 1)
-(evil-escape-mode)
-
 (require 'evil-surround)
-(global-evil-surround-mode 1)
+
+(defun toggle-evil ()
+ (interactive)
+ (if evil-enabled
+     (progn
+       (evil-escape-mode 0)
+       (global-evil-leader-mode)
+       (global-evil-surround-mode 0)
+       (evil-mode 0)
+       (setq evil-enabled nil))
+   (progn
+     (global-evil-leader-mode)
+     (global-evil-surround-mode 1)
+     (evil-mode 1)
+     (evil-escape-mode)
+     (setq evil-enabled t))))
+
+(toggle-evil)
 
 (require 'ido)
 (ido-mode t)
@@ -102,6 +136,7 @@ Return a list of installed packages or nil for every skipped package."
 
 ;;; key bindings
 (setq-default evil-escape-key-sequence "jk")
+(evil-leader/set-leader ",")
 (evil-leader/set-key
   "b" 'helm-buffers-list
   "d" 'kill-buffer
@@ -113,6 +148,10 @@ Return a list of installed packages or nil for every skipped package."
 (define-key evil-normal-state-map (kbd "C-p") 'fiplr-find-file)
 (define-key evil-normal-state-map "\\" 'next-buffer)
 (define-key evil-normal-state-map "|" 'previous-buffer)
+(define-key evil-normal-state-map "gt" 'next-frame)
+
+;;; Ctrl-P for non-evil mode
+(global-set-key (kbd "C-p") 'fiplr-find-file)
 
 (add-to-list 'auto-mode-alist '("\\.org\\'" . org-mode))
 (semantic-mode t)

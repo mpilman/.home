@@ -251,6 +251,7 @@ setlocal omnifunc=necoghc#omnifunc
 nnoremap <leader>g :YcmCompleter GoTo<CR>
 nnoremap <leader>D :YcmDiag<CR>
 nnoremap <leader>F :YcmCompleter FixIt<CR>
+" let g:ycm_path_to_python_interpreter = '/home/vagrant/bin/python'
 " let g:ycm_autoclose_preview_window_after_completion = 1
 augroup CloseAutocompletePreview
     autocmd InsertLeave *.hpp,*.py :pclose
