@@ -19,7 +19,7 @@ for line in proc.stderr.decode('utf-8').split('\n'):
         frm = ' (framework directory)'
         if line.endswith(frm):
             line = line[:-len(frm)]
-        includes.append(line[1:-1])
+        includes.append(line[1:])
     else:
         is_include_path = False
 

@@ -53,7 +53,57 @@ Return a list of installed packages or nil for every skipped package."
  'helm-projectile
  'rainbow-delimiters
  'company-jedi
+ 'cargo
+ 'flycheck
+ 'flycheck-rust
+ 'racer
+ 'rust-mode
+ 'rustfmt
+ 'auctex
+ 'company-auctex
+ 'slime
+ 'slime-company
+ 'paredit
  )
+
+;;; LaTeX
+;(require 'auctex-latexmk)
+;(auctex-latexmk-setup)
+; company mode
+(require 'company-auctex)
+(company-auctex-init)
+
+(setq TeX-auto-save t)
+(setq TeX-parse-self t)
+(setq-default TeX-master nil)
+(add-hook 'LaTeX-mode-hook 'visual-line-mode)
+(add-hook 'LaTeX-mode-hook 'flyspell-mode)
+(add-hook 'LaTeX-mode-hook 'LaTeX-math-mode)
+(add-hook 'LaTeX-mode-hook 'turn-on-reftex)
+(setq reftex-plug-into-AUCTeX t)
+(setq TeX-PDF-mode t)
+
+;;; line break after 80 chars
+(add-hook 'LaTeX-mode-hook 'turn-on-auto-fill)
+(setq fill-column 80)
+
+;; Use Skim as viewer, enable source <-> PDF sync
+;; make latexmk available via C-c C-c
+;; Note: SyncTeX is setup via ~/.latexmkrc (see below)
+(add-hook 'LaTeX-mode-hook (lambda ()
+  (push
+    '("latexmk" "latexmk -pdf %s" TeX-run-TeX nil t
+      :help "Run latexmk on file")
+    TeX-command-list)))
+(add-hook 'TeX-mode-hook '(lambda () (setq TeX-command-default "latexmk")))
+
+;; use Skim as default pdf viewer
+;; Skim's displayline is used for forward search (from .tex to .pdf)
+;; option -b highlights the current line; option -g opens Skim in the background  
+(setq TeX-view-program-selection '((output-pdf "PDF Viewer")))
+(setq TeX-view-program-list
+     '(("PDF Viewer" "/Applications/Skim.app/Contents/SharedSupport/displayline -b -g %n %o %b")))
+
 
 (add-hook 'prog-mode-hook #'rainbow-delimiters-mode)
 
@@ -83,6 +133,17 @@ Return a list of installed packages or nil for every skipped package."
 
 ;;; Load .h-files in C++-mode by default
 (add-to-list 'auto-mode-alist '("\\.h\\'" . c++-mode))
+
+;;; Lisp related stuff
+(autoload 'enable-paredit-mode "paredit" "Turn on pseudo-structural editing of Lisp code." t)
+(add-hook 'emacs-lisp-mode-hook       #'enable-paredit-mode)
+(add-hook 'eval-expression-minibuffer-setup-hook #'enable-paredit-mode)
+(add-hook 'ielm-mode-hook             #'enable-paredit-mode)
+(add-hook 'lisp-mode-hook             #'enable-paredit-mode)
+(add-hook 'lisp-interaction-mode-hook #'enable-paredit-mode)
+(add-hook 'scheme-mode-hook           #'enable-paredit-mode)
+
+(setq inferior-lisp-program "/usr/local/bin/sbcl")
 
 ;;; Autocompletion for lisp
 (setq tab-always-indent 'complete)
@@ -167,6 +228,17 @@ Return a list of installed packages or nil for every skipped package."
 	    (define-key evil-normal-state-map (kbd "RET") 'neotree-enter)
 	    (define-key evil-normal-state-map (kbd "q") 'neotree-hide)))
 
+;;; Rust
+(setq racer-cmd "/Users/mpilman/.cargo/bin/racer")
+(setq racer-rust-src-path "/Users/mpilman/Projects/rustc-1.9.0/src")
+(add-hook 'rust-mode-hook #'racer-mode)
+(add-hook 'racer-mode-hook #'eldoc-mode)
+
+(add-hook 'racer-mode-hook #'company-mode)
+
+(global-set-key (kbd "TAB") #'company-indent-or-complete-common) ;
+(setq company-tooltip-align-annotations t)
+
 (require 'relative-line-numbers)
 (global-relative-line-numbers-mode)
 
@@ -250,3 +322,8 @@ _ec_: edit .emacs file
   (interactive)
   (setq buffer-display-table (make-display-table))
     (aset buffer-display-table ?\^M []))
+
+
+;;; PATH
+(setenv "PATH" (concat (getenv "PATH") ":/Library/TeX/texbin"))
+(setq exec-path (append exec-path '("/Library/TeX/texbin")))

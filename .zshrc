@@ -41,9 +41,13 @@ alias -s cpp=vim
 alias -s h=vim
 alias -s hpp=vim
 
-export PATH=/opt/local/bin:/usr/local/bin:/usr/local/sbin:/opt/local/sbin:~/.local/bin:~/bin:$PATH
+PATH=/opt/local/bin:/usr/local/bin:/usr/local/sbin:/opt/local/sbin:~/.local/bin:~/bin:$PATH
 if [ -e /home/vagrant/.nix-profile/etc/profile.d/nix.sh ]; then . /home/vagrant/.nix-profile/etc/profile.d/nix.sh; fi # added by Nix installer
-export EDITOR=vim
+if [ -d $HOME/.cargo/bin ]; then PATH=$HOME/.cargo/bin:$PATH; fi # if cargo is used
+if [ -e $HOME/Projects/rustc-1.9.0 ]; then export RUST_SRC_PATH=$HOME/Projects/rustc-1.9.0/src; fi
+
+export EDITOR=emacs
+export PATH
 
 if [[ $HOST == bach* ]]
 then
