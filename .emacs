@@ -38,7 +38,7 @@ Return a list of installed packages or nil for every skipped package."
  'evil
  'evil-surround
  'evil-escape
- 'labburn-theme
+ 'zenburn-theme
  'relative-line-numbers
  'evil-leader
  'helm
@@ -53,10 +53,26 @@ Return a list of installed packages or nil for every skipped package."
  'helm-projectile
  'rainbow-delimiters
  'company-jedi
+ 'back-button
+ 'paredit
  )
+
+;;; Enable paredit whenever a lisp-file is opened
+(autoload 'enable-paredit-mode "paredit" "Turn on pseudo-structural editing of Lisp code." t)
+(add-hook 'emacs-lisp-mode-hook       #'enable-paredit-mode)
+(add-hook 'eval-expression-minibuffer-setup-hook #'enable-paredit-mode)
+(add-hook 'ielm-mode-hook             #'enable-paredit-mode)
+(add-hook 'lisp-mode-hook             #'enable-paredit-mode)
+(add-hook 'lisp-interaction-mode-hook #'enable-paredit-mode)
+(add-hook 'scheme-mode-hook           #'enable-paredit-mode)
+
+;;; Add back button to emacs
+(require 'back-button)
+(back-button-mode 1)
 
 (add-hook 'prog-mode-hook #'rainbow-delimiters-mode)
 
+(setq company-global-modes '(not gud-mode))
 (add-hook 'after-init-hook 'global-company-mode)
 
 ;;; Python
@@ -73,6 +89,7 @@ Return a list of installed packages or nil for every skipped package."
 (require 'rtags)
 (require 'company-rtags)
 
+;;; rtags configuration
 (setq rtags-completions-enabled t)
 (eval-after-load 'company
   '(add-to-list
@@ -92,7 +109,7 @@ Return a list of installed packages or nil for every skipped package."
 ;(add-hook 'after-init-hook 'global-color-identifiers-mode)
 ;(add-hook 'prog-mode-hook 'rainbow-identifiers-mode)
 
-(load-theme 'labburn t)
+(load-theme 'zenburn t)
 
 ;;; Mouse support in terminal
 (xterm-mouse-mode)
@@ -141,7 +158,12 @@ Return a list of installed packages or nil for every skipped package."
   "b" 'helm-buffers-list
   "d" 'kill-buffer
   "g" 'rtags-find-symbol-at-point
-  "s" 'rtags-find-symbol)
+  "s" 'rtags-find-symbol
+  "m" 'back-button-push-mark-local-and-global
+  "h" 'back-button-global-backward
+  "l" 'back-button-global-forward
+  "p" 'point-to-register
+  "j" 'jump-to-register)
 
 (define-key evil-normal-state-map "L" "$")
 (define-key evil-normal-state-map "H" "^")
@@ -170,22 +192,22 @@ Return a list of installed packages or nil for every skipped package."
 (require 'relative-line-numbers)
 (global-relative-line-numbers-mode)
 
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(custom-safe-themes
-   (quote
-    ("fa2b58bb98b62c3b8cf3b6f02f058ef7827a8e497125de0254f56e373abee088" "bffa9739ce0752a37d9b1eee78fc00ba159748f50dc328af4be661484848e476" default)))
- '(show-paren-mode t))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(default ((t (:inherit nil :stipple nil :background "#3f3f3f" :foreground "#dadaca" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 140 :width normal :foundry "nil" :family "Menlo"))))
- '(linum ((t (:background "#3f3f3f" :foreground "#636363" :height 1.0)))))
+;(custom-set-variables
+; ;; custom-set-variables was added by Custom.
+; ;; If you edit it by hand, you could mess it up, so be careful.
+; ;; Your init file should contain only one such instance.
+; ;; If there is more than one, they won't work right.
+; '(custom-safe-themes
+;   (quote
+;    ("fa2b58bb98b62c3b8cf3b6f02f058ef7827a8e497125de0254f56e373abee088" "bffa9739ce0752a37d9b1eee78fc00ba159748f50dc328af4be661484848e476" default)))
+; '(show-paren-mode t))
+;(custom-set-faces
+; ;; custom-set-faces was added by Custom.
+; ;; If you edit it by hand, you could mess it up, so be careful.
+; ;; Your init file should contain only one such instance.
+; ;; If there is more than one, they won't work right.
+; '(default ((t (:inherit nil :stipple nil :background "#3f3f3f" :foreground "#dadaca" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 140 :width normal :foundry "nil" :family "Menlo"))))
+; '(linum ((t (:background "#3f3f3f" :foreground "#636363" :height 1.0)))))
 
 (defun create-tags (dir-name)
      "Create tags file."
@@ -233,14 +255,14 @@ _r_: rtags...
 _d_: Don't show dos-endings for dos-unix mixed files
 _lc_: reload config
 _ec_: edit .emacs file
+_gi_: guess current indentation
 "
     ("r" (hydra-rtags-menu/body) :exit t)
     ("lc" (load-file "~/.emacs") :exit t)
     ("ec" (find-file "~/.home/.emacs") :exit t)
+    ("gi" (c-guess) :exit t)
     ("d" (remove-dos-eol) :exit t)
     ("c" nil "cancel")
-    ("v" Buffer-menu-select "select" :color blue)
-    ("o" Buffer-menu-other-window "other-window" :color blue)
     ("q" quit-window "quit" :color blue))
 
 (define-key evil-normal-state-map (kbd "SPC") 'hydra-space-menu/body)
@@ -250,3 +272,59 @@ _ec_: edit .emacs file
   (interactive)
   (setq buffer-display-table (make-display-table))
     (aset buffer-display-table ?\^M []))
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(gdb-non-stop-setting nil))
+
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(default ((t (:family "Meslo LG L for Powerline" :foundry "bitstream" :slant normal :weight normal :height 113 :width normal)))))
+
+;;; Set path to undodb
+(setenv "PATH" (concat (getenv "PATH") ":~/undodb"))
+(setq exec-path (append exec-path '("~/undodb")))
+
+;;; This seems to fix a nasty GUD-bug
+(defun gdb-setup-windows ()
+  "Layout the window pattern for option `gdb-many-windows'."
+  (interactive)
+  (gdb-get-buffer-create 'gdb-locals-buffer)
+  (gdb-get-buffer-create 'gdb-stack-buffer)
+  (gdb-get-buffer-create 'gdb-breakpoints-buffer)
+  (set-window-dedicated-p (selected-window) nil)
+  (switch-to-buffer gud-comint-buffer)
+  (set-window-dedicated-p (selected-window) t)
+  (delete-other-windows)
+  (let ((win0 (selected-window))
+        (win1 (split-window nil ( / ( * (window-height) 3) 4)))
+        (win2 (split-window nil ( / (window-height) 3)))
+        (win3 (split-window-right)))
+    (gdb-set-window-buffer (gdb-locals-buffer-name) nil win3)
+    (select-window win2)
+    (set-window-buffer
+     win2
+     (if gud-last-last-frame
+         (gud-find-file (car gud-last-last-frame))
+       (if gdb-main-file
+           (gud-find-file gdb-main-file)
+         ;; Put buffer list in window if we
+         ;; can't find a source file.
+         (list-buffers-noselect))))
+    (setq gdb-source-window (selected-window))
+    (let ((win4 (split-window-right)))
+      (gdb-set-window-buffer
+       (gdb-get-buffer-create 'gdb-inferior-io) nil win4))
+    (select-window win1)
+    (gdb-set-window-buffer (gdb-stack-buffer-name))
+    (let ((win5 (split-window-right)))
+      (gdb-set-window-buffer (if gdb-show-threads-by-default
+                                 (gdb-threads-buffer-name)
+                               (gdb-breakpoints-buffer-name))
+                             nil win5))
+    (select-window win0)))
