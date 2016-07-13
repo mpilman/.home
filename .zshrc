@@ -66,3 +66,17 @@ if [ -e $NIX_FILE ]
 then
     . $NIX_FILE
 fi
+
+function mgrep {
+    if [ -z "$1" ]
+    then
+		echo "Parameter 1 not set"
+    else
+        if [[ `uname` == 'Darwin' ]]
+        then
+            find -E . -regex '.*\.(h|cpp)' -and -not -name \*.g.cpp -print0 | xargs -0 grep -n "$1" | less
+        else
+            find . -regex '.*\.\(h\|cpp\)' -and -not -name \*.g.cpp -print0 | xargs -0 grep -n "$1" | less
+        fi
+    fi
+}

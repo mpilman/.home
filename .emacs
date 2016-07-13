@@ -24,6 +24,8 @@ Return a list of installed packages or nil for every skipped package."
       `((".*" . ,temporary-file-directory)))
 (setq auto-save-file-name-transforms
       `((".*" ,temporary-file-directory t)))
+;; create the autosave dir if necessary, since emacs won't.
+(make-directory "~/.emacs.d/autosaves/" t)
 
 ;; Make sure emacs does not create new splits all the time
 (setq split-height-threshold 1200)
@@ -65,7 +67,13 @@ Return a list of installed packages or nil for every skipped package."
  'slime-company
  'paredit
  'back-button
+ 'cmake-mode
+ 'cmake-font-lock
  )
+
+
+;;; Electric Pair
+(electric-pair-mode 1)
 
 ;;; LaTeX
 ;(require 'auctex-latexmk)
@@ -104,7 +112,6 @@ Return a list of installed packages or nil for every skipped package."
 (setq TeX-view-program-selection '((output-pdf "PDF Viewer")))
 (setq TeX-view-program-list
      '(("PDF Viewer" "/Applications/Skim.app/Contents/SharedSupport/displayline -b -g %n %o %b")))
-
 
 ;;; Enable paredit whenever a lisp-file is opened
 (autoload 'enable-paredit-mode "paredit" "Turn on pseudo-structural editing of Lisp code." t)
@@ -160,6 +167,54 @@ Return a list of installed packages or nil for every skipped package."
 (add-hook 'scheme-mode-hook           #'enable-paredit-mode)
 
 (setq inferior-lisp-program "/usr/local/bin/sbcl")
+
+;;; C++ related stuff
+
+;;; Indentation
+(setq-default
+ c-basic-offset 4
+ tab-width 4
+ indent-tabs-mode t)
+(setq c-default-style "linux")
+
+(require 'font-lock)
+
+(defun --copy-face (new-face face)
+  "Define NEW-FACE from existing FACE."
+  (copy-face face new-face)
+  (eval `(defvar ,new-face nil))
+  (set new-face new-face))
+
+(--copy-face 'font-lock-label-face  ; labels, case, public, private, proteced, namespace-tags
+         'font-lock-keyword-face)
+(--copy-face 'font-lock-doc-markup-face ; comment markups such as Javadoc-tags
+         'font-lock-doc-face)
+(--copy-face 'font-lock-doc-string-face ; comment markups
+         'font-lock-comment-face)
+
+(global-font-lock-mode t)
+(setq font-lock-maximum-decoration t)
+
+
+(add-hook 'c++-mode-hook
+      '(lambda()
+        (font-lock-add-keywords
+         nil '(;; complete some fundamental keywords
+           ("\\<\\(void\\|unsigned\\|signed\\|char\\|short\\|bool\\|int\\|long\\|float\\|double\\)\\>" . font-lock-keyword-face)
+           ;; add the new C++11 keywords
+           ("\\<\\(alignof\\|alignas\\|constexpr\\|decltype\\|noexcept\\|nullptr\\|static_assert\\|thread_local\\|override\\|final\\)\\>" . font-lock-keyword-face)
+           ("\\<\\(char[0-9]+_t\\)\\>" . font-lock-keyword-face)
+           ;; PREPROCESSOR_CONSTANT
+           ("\\<[A-Z]+[A-Z_]+\\>" . font-lock-constant-face)
+           ;; hexadecimal numbers
+           ("\\<0[xX][0-9A-Fa-f]+\\>" . font-lock-constant-face)
+           ;; integer/float/scientific numbers
+           ("\\<[\\-+]*[0-9]*\\.?[0-9]+\\([ulUL]+\\|[eE][\\-+]?[0-9]+\\)?\\>" . font-lock-constant-face)
+           ;; user-types (customize!)
+           ("\\<[A-Za-z_]+[A-Za-z_0-9]*_\\(t\\|type\\|ptr\\)\\>" . font-lock-type-face)
+           ("\\<\\(xstring\\|xchar\\)\\>" . font-lock-type-face)
+           ))
+        ) t)
 
 ;;; Autocompletion for lisp
 (setq tab-always-indent 'complete)
@@ -272,12 +327,19 @@ Return a list of installed packages or nil for every skipped package."
 ;   (quote
 ;    ("fa2b58bb98b62c3b8cf3b6f02f058ef7827a8e497125de0254f56e373abee088" "bffa9739ce0752a37d9b1eee78fc00ba159748f50dc328af4be661484848e476" default)))
 ; '(show-paren-mode t))
-;(custom-set-faces
-; ;; custom-set-faces was added by Custom.
-; ;; If you edit it by hand, you could mess it up, so be careful.
-; ;; Your init file should contain only one such instance.
-; ;; If there is more than one, they won't work right.
-; '(default ((t (:inherit nil :stipple nil :background "#3f3f3f" :foreground "#dadaca" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 140 :width normal :foundry "nil" :family "Menlo"))))
+(if (eq system-type 'darwin)
+	(custom-set-faces
+	 ;; custom-set-faces was added by Custom.
+	 ;; If you edit it by hand, you could mess it up, so be careful.
+	 ;; Your init file should contain only one such instance.
+	 ;; If there is more than one, they won't work right.
+	 '(default ((t (:inherit nil :stipple nil :background "#3f3f3f" :foreground "#dadaca" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 140 :width normal :foundry "nil" :family "Menlo")))))
+  (custom-set-faces
+   ;; custom-set-faces was added by Custom.
+   ;; If you edit it by hand, you could mess it up, so be careful.
+   ;; Your init file should contain only one such instance.
+   ;; If there is more than one, they won't work right.
+   '(default ((t (:family "Meslo LG L for Powerline" :foundry "bitstream" :slant normal :weight normal :height 113 :width normal))))))
 ; '(linum ((t (:background "#3f3f3f" :foreground "#636363" :height 1.0)))))
 
 (defun create-tags (dir-name)
@@ -354,13 +416,6 @@ _gi_: guess current indentation
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(gdb-non-stop-setting nil))
-
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(default ((t (:family "Meslo LG L for Powerline" :foundry "bitstream" :slant normal :weight normal :height 113 :width normal)))))
 
 ;;; Set path to undodb
 (setenv "PATH" (concat (getenv "PATH") ":~/undodb"))
