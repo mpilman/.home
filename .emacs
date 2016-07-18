@@ -79,6 +79,7 @@ Return a list of installed packages or nil for every skipped package."
 ;(require 'auctex-latexmk)
 ;(auctex-latexmk-setup)
 ; company mode
+(require 'company)
 (require 'company-auctex)
 (company-auctex-init)
 
@@ -129,7 +130,6 @@ Return a list of installed packages or nil for every skipped package."
 (add-hook 'prog-mode-hook #'rainbow-delimiters-mode)
 
 (setq company-global-modes '(not gud-mode))
-(add-hook 'after-init-hook 'global-company-mode)
 
 ;;; Python
 (defun my/python-mode-hook ()
@@ -146,13 +146,18 @@ Return a list of installed packages or nil for every skipped package."
 (require 'company-rtags)
 
 ;;; rtags configuration
-(setq rtags-completions-enabled t)
-(eval-after-load 'company
-  '(add-to-list
-    'company-backends 'company-rtags))
 (setq rtags-autostart-diagnostics t)
-(rtags-enable-standard-keybindings)
-(setq rtags-use-helm t)
+(rtags-diagnostics)
+(setq rtags-completions-enabled t)
+(push 'company-rtags company-backends)
+(global-company-mode)
+
+;;; old config
+;(setq rtags-completions-enabled t)
+;(eval-after-load 'company '(add-to-list 'company-backends 'company-rtags))
+;(setq rtags-autostart-diagnostics t)
+;(rtags-enable-standard-keybindings)
+;(setq rtags-use-helm t)
 
 ;;; Load .h-files in C++-mode by default
 (add-to-list 'auto-mode-alist '("\\.h\\'" . c++-mode))
@@ -291,7 +296,6 @@ Return a list of installed packages or nil for every skipped package."
 (global-set-key (kbd "C-p") 'fiplr-find-file)
 
 (add-to-list 'auto-mode-alist '("\\.org\\'" . org-mode))
-(semantic-mode t)
 
 (require 'fiplr)
 
