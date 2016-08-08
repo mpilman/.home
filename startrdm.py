@@ -5,7 +5,7 @@ import subprocess
 
 f = open('/dev/null', 'a')
 proc = subprocess.run(
-    ['clang', '-E', '-x', 'c++', '-', '-v'],
+    ['clang', '-E', '-x', 'c++', '-std=c++11', '-stdlib=libc++', '-', '-v'],
     stdin=f, stderr=subprocess.PIPE, stdout=None)
 
 is_include_path = False

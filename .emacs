@@ -17,7 +17,7 @@ Return a list of installed packages or nil for every skipped package."
    packages))
 
 ;;; Visible-bell also deactivites the normal bell which is annoying
-(setq visible-bell t)
+(setq ring-bell-function 'ignore)
 
 ;;; Store backup files in tmp directory
 (setq backup-directory-alist
@@ -28,8 +28,9 @@ Return a list of installed packages or nil for every skipped package."
 (make-directory "~/.emacs.d/autosaves/" t)
 
 ;; Make sure emacs does not create new splits all the time
-(setq split-height-threshold 1200)
-(setq split-width-threshold 2000)
+(setq inhibit-startup-screen t)
+;(setq split-height-threshold 1200)
+;(setq split-width-threshold 2000)
 
 ;;; Make sure archive descriptions are downloaded
 (or (file-exists-p package-user-dir)
@@ -69,8 +70,15 @@ Return a list of installed packages or nil for every skipped package."
  'back-button
  'cmake-mode
  'cmake-font-lock
+ 'csharp-mode
+ 'clang-format
+ 'magit
+ 'magit-svn
+ 'evil-magit
  )
 
+;;; Magit
+(require 'evil-magit)
 
 ;;; Electric Pair
 (electric-pair-mode 1)
@@ -142,15 +150,15 @@ Return a list of installed packages or nil for every skipped package."
 (require 'powerline)
 (powerline-default-theme)
 
-(require 'rtags)
+;;; rtags configuration
 (require 'company-rtags)
 
-;;; rtags configuration
 (setq rtags-autostart-diagnostics t)
 (rtags-diagnostics)
 (setq rtags-completions-enabled t)
 (push 'company-rtags company-backends)
 (global-company-mode)
+(setq rtags-spellcheck-enabled nil)
 
 ;;; old config
 ;(setq rtags-completions-enabled t)
@@ -181,6 +189,8 @@ Return a list of installed packages or nil for every skipped package."
  tab-width 4
  indent-tabs-mode t)
 (setq c-default-style "linux")
+(c-set-offset 'innamespace 0)
+
 
 (require 'font-lock)
 
@@ -233,10 +243,13 @@ Return a list of installed packages or nil for every skipped package."
 
 ;;; Mouse support in terminal
 (xterm-mouse-mode)
-(setq mouse-wheel-scroll-amount '(1 ((shift) . 1))) ;; one line at a time
-(setq mouse-wheel-progressive-speed nil) ;; don't accelerate scrolling
-(setq mouse-wheel-follow-mouse 't) ;; scroll window under mouse
-(setq scroll-step 1) ;; keyboard scroll one line at a time
+(setq scroll-conservatively 101) ;; move minimum when cursor exits view, instead of recentering
+(setq mouse-wheel-scroll-amount '(1)) ;; mouse scroll moves 1 line at a time, instead of 5 lines
+(setq mouse-wheel-progressive-speed nil) ;; on a long mouse scroll keep scrolling by 1 line
+;(setq mouse-wheel-scroll-amount '(1 ((shift) . 1))) ;; one line at a time
+;(setq mouse-wheel-progressive-speed nil) ;; don't accelerate scrolling
+;(setq mouse-wheel-follow-mouse 't) ;; scroll window under mouse
+;(setq scroll-step 1) ;; keyboard scroll one line at a time
 
 (defvar evil-enabled nil)
 
@@ -275,15 +288,16 @@ Return a list of installed packages or nil for every skipped package."
 (setq-default evil-escape-key-sequence "jk")
 (evil-leader/set-leader ",")
 (evil-leader/set-key
+  "m" 'magit-status
   "b" 'helm-buffers-list
   "d" 'kill-buffer
   "g" 'rtags-find-symbol-at-point
   "s" 'rtags-find-symbol
-  "m" 'back-button-push-mark-local-and-global
-  "h" 'back-button-global-backward
-  "l" 'back-button-global-forward
+  "h" 'rtags-location-stack-back
+  "l" 'rtags-location-stack-forward
   "p" 'point-to-register
-  "j" 'jump-to-register)
+  "j" 'jump-to-register
+  "=" 'clang-format-buffer)
 
 (define-key evil-normal-state-map "L" "$")
 (define-key evil-normal-state-map "H" "^")
@@ -291,6 +305,10 @@ Return a list of installed packages or nil for every skipped package."
 (define-key evil-normal-state-map "\\" 'next-buffer)
 (define-key evil-normal-state-map "|" 'previous-buffer)
 (define-key evil-normal-state-map "gt" 'next-frame)
+
+(define-key evil-visual-state-map "H" "^")
+(define-key evil-visual-state-map "L" "$")
+(define-key evil-visual-state-map "=" 'clang-format-region)
 
 ;;; Ctrl-P for non-evil mode
 (global-set-key (kbd "C-p") 'fiplr-find-file)
@@ -388,17 +406,23 @@ _t_: print type under cursor
     "
 ^Action^
 ^^^^^^^^
+_m_: maximize
 _r_: rtags...
 _d_: Don't show dos-endings for dos-unix mixed files
 _lc_: reload config
 _ec_: edit .emacs file
 _gi_: guess current indentation
+_fb_: format current buffer
+_fr_: format region
 "
+	("m" toggle-frame-maximized :exit t)
     ("r" (hydra-rtags-menu/body) :exit t)
     ("lc" (load-file "~/.emacs") :exit t)
     ("ec" (find-file "~/.home/.emacs") :exit t)
     ("gi" (c-guess) :exit t)
     ("d" (remove-dos-eol) :exit t)
+	("fb" clang-format-buffer :exit t)
+	("fr" clang-format-region :exit t)
     ("c" nil "cancel")
     ("q" quit-window "quit" :color blue))
 
@@ -463,3 +487,9 @@ _gi_: guess current indentation
                                (gdb-breakpoints-buffer-name))
                              nil win5))
     (select-window win0)))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(default ((t (:inherit nil :stipple nil :background "#3f3f3f" :foreground "#dadaca" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 140 :width normal :foundry "nil" :family "Menlo")))))
