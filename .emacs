@@ -1,3 +1,4 @@
+;;; Code:
 ;; load package manager
 (require 'package)
 (add-to-list 'package-archives
@@ -48,7 +49,6 @@ Return a list of installed packages or nil for every skipped package."
  'rtags
  'company
  'fiplr
- 'powerline
  'neotree
  'hydra
  'rainbow-identifiers
@@ -76,6 +76,99 @@ Return a list of installed packages or nil for every skipped package."
  'magit-svn
  'evil-magit
  )
+
+;;; DOOM theme
+;(custom-set-variables '(menu-bar-mode nil))
+;(menu-bar-mode -1)
+(tool-bar-mode -1)
+(if (file-exists-p "~/Projects/doom")
+    (progn
+      (add-to-list 'load-path "~/Projects/doom/all-the-icons.el")
+      (add-to-list 'load-path "~/Projects/doom/emacs-doom-theme")
+      (add-to-list 'custom-theme-load-path "~/Projects/doom/emacs-doom-theme")
+      (require 'all-the-icons)
+      (require 'doom-theme)
+      (custom-set-variables
+       ;; custom-set-variables was added by Custom.
+       ;; If you edit it by hand, you could mess it up, so be careful.
+       ;; Your init file should contain only one such instance.
+       ;; If there is more than one, they won't work right.
+       '(custom-enabled-themes (quote (doom-one)))
+       '(custom-safe-themes
+         (quote
+          ("b317b64ade8a19383695b1331496e80ae9117cfa57ab5287c436ceeded021d4b" default))))
+      ;; mode line
+      ;;(set-face-attribute 'mode-line nil :height 170)
+      (setq-default
+       mode-line-format
+       '((:eval
+          (list
+           ;; value of `mode-name'
+           (cond
+            ((derived-mode-p 'c++-mode)
+             (propertize
+              (all-the-icons-alltheicon "cplusplus-line")
+              'face `(:family ,(all-the-icons-alltheicon-family) :height 1.2)
+              'display '(raise -0.1)))
+            ((derived-mode-p 'c-mode)
+             (propertize
+              (all-the-icons-alltheicon "c")
+              'face `(:family ,(all-the-icons-alltheicon-family) :height 1.2)
+              'display '(raise -0.1)))
+            ((derived-mode-p 'python-mode)
+             (propertize
+              (all-the-icons-devicon "python")
+              'face `(:family ,(all-the-icons-devicon-family) :height 1.2)
+              'display '(raise -0.1)))
+            ((derived-mode-p 'emacs-lisp-mode)
+             (propertize
+              (all-the-icons-fileicon "elisp")
+              'face `(:family ,(all-the-icons-fileicon-family) :height 1.2)
+              'display '(raise -0.1)))
+            ((derived-mode-p 'common-lisp-mode)
+             (propertize
+              (all-the-icons-fileicon "common-lisp")
+              'face `(:family ,(all-the-icons-fileicon-family) :height 1.2)
+              'display '(raise -0.1)))
+            ((derived-mode-p 'lisp-mode)
+             (propertize
+              (all-the-icons-fileicon "lisp")
+              'face `(:family ,(all-the-icons-fileicon-family) :height 1.2)
+              'display '(raise -0.1)))
+            (t "%m")
+            )
+           ;;(all-the-icons-icon-for-mode major-mode)
+           " | "
+           mode-line-buffer-identification
+           "   | "
+           ;; value of current line number
+           (propertize
+            (all-the-icons-faicon "pencil")
+            'face `(:family ,(all-the-icons-faicon-family) :height 1.2)
+            'display '(raise -0.1))
+           " %l:%c "
+           (if (buffer-modified-p)
+           (propertize
+            (all-the-icons-octicon "diff-modified")
+            'face `(:family ,(all-the-icons-octicon-family) :height 1.2)
+            'display '(raise 0.01)))
+           " | "
+           (propertize
+            (all-the-icons-devicon "git-branch")
+            'face `(:family ,(all-the-icons-devicon-family) :height 1.2)
+            'display '(raise -0.1))
+           '(vc-mode vc-mode)
+           ))))
+      )
+  (progn
+    (load-theme 'zenburn t)))
+
+;;; retore split screens
+(winner-mode 1)
+
+;;; flycheck
+(require 'flycheck)
+(global-flycheck-mode)
 
 ;;; Magit
 (require 'evil-magit)
@@ -141,14 +234,12 @@ Return a list of installed packages or nil for every skipped package."
 
 ;;; Python
 (defun my/python-mode-hook ()
-  (add-to-list 'company-backends 'company-jedi))
+  (add-to-list 'company-backends 'company-jedi)
+  (flycheck-define-checker python-flake8 "Use the flake8 checker"))
 (add-hook 'python-mode-hook 'my/python-mode-hook)
 
 (require 'projectile)
 (projectile-global-mode)
-
-(require 'powerline)
-(powerline-default-theme)
 
 ;;; rtags configuration
 (require 'company-rtags)
@@ -158,7 +249,16 @@ Return a list of installed packages or nil for every skipped package."
 (setq rtags-completions-enabled t)
 (push 'company-rtags company-backends)
 (global-company-mode)
-(setq rtags-spellcheck-enabled nil)
+;(setq rtags-spellcheck-enabled nil)
+
+(require 'flycheck-rtags)
+
+(defun my-flycheck-rtags-setup ()
+  (flycheck-select-checker 'rtags)
+  (setq-local flycheck-highlighting-mode nil)
+  (setq-local flycheck-check-syntax-automatically nil))
+
+(add-hook 'c-mode-common-hook #'my-flycheck-rtags-setup)
 
 ;;; old config
 ;(setq rtags-completions-enabled t)
@@ -187,7 +287,7 @@ Return a list of installed packages or nil for every skipped package."
 (setq-default
  c-basic-offset 4
  tab-width 4
- indent-tabs-mode t)
+ indent-tabs-mode nil)
 (setq c-default-style "linux")
 (c-set-offset 'innamespace 0)
 
@@ -239,8 +339,6 @@ Return a list of installed packages or nil for every skipped package."
 ;(add-hook 'after-init-hook 'global-color-identifiers-mode)
 ;(add-hook 'prog-mode-hook 'rainbow-identifiers-mode)
 
-(load-theme 'zenburn t)
-
 ;;; Mouse support in terminal
 (xterm-mouse-mode)
 (setq scroll-conservatively 101) ;; move minimum when cursor exits view, instead of recentering
@@ -257,32 +355,19 @@ Return a list of installed packages or nil for every skipped package."
 (require 'evil)
 (require 'evil-surround)
 
-(defun toggle-evil ()
- (interactive)
- (if evil-enabled
-     (progn
-       (evil-escape-mode 0)
-       (global-evil-leader-mode)
-       (global-evil-surround-mode 0)
-       (evil-mode 0)
-       (setq evil-enabled nil))
-   (progn
-     (global-evil-leader-mode)
-     (global-evil-surround-mode 1)
-     (evil-mode 1)
-     (evil-escape-mode)
-     (setq evil-enabled t))))
-
-(toggle-evil)
+(global-evil-leader-mode)
+(global-evil-surround-mode 1)
+(evil-mode 1)
+(evil-escape-mode)
 
 (require 'ido)
 (ido-mode t)
-(setq ido-enable-flex-matching)
+(setq ido-enable-flex-matching 1)
 
 (require 'helm-config)
 
 (require 'fiplr)
-(setq fiplr-root-markers '("Makefile"))
+(setq fiplr-root-markers '("Makefile" "README"))
 
 ;;; key bindings
 (setq-default evil-escape-key-sequence "jk")
@@ -291,12 +376,22 @@ Return a list of installed packages or nil for every skipped package."
   "m" 'magit-status
   "b" 'helm-buffers-list
   "d" 'kill-buffer
+  "p" 'point-to-register
+  "j" 'jump-to-register)
+
+(evil-leader/set-key-for-mode 'c++-mode
   "g" 'rtags-find-symbol-at-point
   "s" 'rtags-find-symbol
   "h" 'rtags-location-stack-back
   "l" 'rtags-location-stack-forward
-  "p" 'point-to-register
-  "j" 'jump-to-register
+  "f" 'rtags-fixit
+  "=" 'clang-format-buffer)
+
+(evil-leader/set-key-for-mode 'c-mode
+  "g" 'rtags-find-symbol-at-point
+  "s" 'rtags-find-symbol
+  "h" 'rtags-location-stack-back
+  "l" 'rtags-location-stack-forward
   "=" 'clang-format-buffer)
 
 (define-key evil-normal-state-map "L" "$")
@@ -308,7 +403,8 @@ Return a list of installed packages or nil for every skipped package."
 
 (define-key evil-visual-state-map "H" "^")
 (define-key evil-visual-state-map "L" "$")
-(define-key evil-visual-state-map "=" 'clang-format-region)
+
+(evil-define-key 'visual c++-mode-map "=" 'clang-format-buffer)
 
 ;;; Ctrl-P for non-evil mode
 (global-set-key (kbd "C-p") 'fiplr-find-file)
@@ -355,7 +451,23 @@ Return a list of installed packages or nil for every skipped package."
 	 ;; If you edit it by hand, you could mess it up, so be careful.
 	 ;; Your init file should contain only one such instance.
 	 ;; If there is more than one, they won't work right.
-	 '(default ((t (:inherit nil :stipple nil :background "#3f3f3f" :foreground "#dadaca" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 140 :width normal :foundry "nil" :family "Menlo")))))
+	 '(default
+		((t
+		  (:inherit nil
+					:stipple nil
+					:background "#3f3f3f"
+					:foreground "#dadaca"
+					:inverse-video nil
+					:box nil
+					:strike-through nil
+					:overline nil
+					:underline nil
+					:slant normal
+					:weight normal
+					:height 150
+					:width normal
+					:foundry "nil"
+					:family "Meslo LG L for Powerline")))))
   (custom-set-faces
    ;; custom-set-faces was added by Custom.
    ;; If you edit it by hand, you could mess it up, so be careful.
@@ -380,7 +492,6 @@ _rp_: find references at point
 _d_: run diagnostics
 _gs_: goto symbol...
 _gf_: goto file...
-_f_: fixit
 _m_: rtags-menu
 _i_: print symbol info
 _p_: preprocess file
@@ -391,7 +502,6 @@ _t_: print type under cursor
     ("gs" rtags-find-symbol :exit t)
     ("d" rtags-diagnostics :exit t)
     ("gf" rtags-find-file :exit t)
-    ("f" rtags-fixit :exit t)
     ("m" rtags-imenu :exit t)
     ("i" rtags-print-symbol-info :exit t)
     ("p" rtags-preprocess-file :exit t)
@@ -437,13 +547,6 @@ _fr_: format region
 ;;; PATH
 (setenv "PATH" (concat (getenv "PATH") ":/Library/TeX/texbin"))
 (setq exec-path (append exec-path '("/Library/TeX/texbin")))
-
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(gdb-non-stop-setting nil))
 
 ;;; Set path to undodb
 (setenv "PATH" (concat (getenv "PATH") ":~/undodb"))
@@ -492,4 +595,16 @@ _fr_: format region
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(default ((t (:inherit nil :stipple nil :background "#3f3f3f" :foreground "#dadaca" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 140 :width normal :foundry "nil" :family "Menlo")))))
+ '(default ((t (:inherit nil :stipple nil :background "#3f3f3f" :foreground "#dadaca" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 150 :width normal :foundry "nil" :family "Meslo LG L for Powerline")))))
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(custom-enabled-themes (quote (doom-one)))
+ '(custom-safe-themes
+   (quote
+    ("3c83b3676d796422704082049fc38b6966bcad960f896669dfc21a7a37a748fa" "b317b64ade8a19383695b1331496e80ae9117cfa57ab5287c436ceeded021d4b" default)))
+ '(package-selected-packages
+   (quote
+    (zenburn-theme smart-mode-line slime-company rustfmt rtags relative-line-numbers realgud rainbow-identifiers rainbow-delimiters racer powerline paredit org-jira neotree markdown-mode magit-svn labburn-theme hydra helm-projectile flycheck-rust fiplr evil-surround evil-magit evil-leader evil-escape csharp-mode company-jedi company-auctex cmake-font-lock clang-format cargo back-button auctex-latexmk))))
