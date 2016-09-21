@@ -37,5 +37,5 @@ includes = filter(addIfNotSeen, includes)
 
 f.close()
 params = map(lambda x: '--isystem {}'.format(x), includes)
-cmd = "rdm {}".format(" ".join(params))
+cmd = "rdm -i 100 -W -l {}".format(" ".join(params))
 os.system(cmd)
