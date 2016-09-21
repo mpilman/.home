@@ -40,8 +40,11 @@ alias -s c=vim
 alias -s cpp=vim
 alias -s h=vim
 alias -s hpp=vim
+alias ed='emacsclient -c'
+alias edn='emacsclient -nc'
+alias lldb='PATH=/usr/bin:$PATH lldb'
 
-PATH=/opt/local/bin:/usr/local/bin:/usr/local/sbin:/opt/local/sbin:~/.local/bin:~/bin:$PATH
+PATH=/opt/local/bin:/usr/local/bin:/usr/local/sbin:/opt/local/sbin:~/.local/bin:~/bin:$PATH:/Users/mpilman/Applications/SnowSQL.app/Contents/MacOS
 if [ -e /home/vagrant/.nix-profile/etc/profile.d/nix.sh ]; then . /home/vagrant/.nix-profile/etc/profile.d/nix.sh; fi # added by Nix installer
 if [ -d $HOME/.cargo/bin ]; then PATH=$HOME/.cargo/bin:$PATH; fi # if cargo is used
 if [ -e $HOME/Projects/rustc-1.9.0 ]; then export RUST_SRC_PATH=$HOME/Projects/rustc-1.9.0/src; fi
@@ -70,6 +73,25 @@ if [ -e $NIX_FILE ]
 then
     . $NIX_FILE
 fi
+
+function gps {
+    if [ -z "$1" ]
+    then
+        echo "No parameter"
+        return
+    fi
+    ps ax | grep $1
+}
+
+function killproc {
+    zparseopts -D 9=force
+    if [ -z "$1" ]
+    then
+        echo "No parameter"
+        return
+    fi
+    gps $1 | cut -d ' ' -f 1 | xargs kill $force
+}
 
 function mgrep {
     if [ -z "$1" ]
