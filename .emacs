@@ -497,7 +497,7 @@ Return a list of installed packages or nil for every skipped package."
    ;; If you edit it by hand, you could mess it up, so be careful.
    ;; Your init file should contain only one such instance.
    ;; If there is more than one, they won't work right.
-   '(default ((t (:family "Meslo LG L for Powerline" :foundry "bitstream" :slant normal :weight normal :height 113 :width normal))))))
+   '(default ((t (:family "Meslo LG L for Powerline" :foundry "bitstream" :slant normal :weight normal :height 100 :width normal))))))
 ; '(linum ((t (:background "#3f3f3f" :foreground "#636363" :height 1.0)))))
 
 (defun create-tags (dir-name)
