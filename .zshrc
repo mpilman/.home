@@ -5,7 +5,7 @@ ZSH=$HOME/.oh-my-zsh
 # Look in ~/.oh-my-zsh/themes/
 # Optionally, if you set this to "random", it'll load a random theme each
 # time that oh-my-zsh is loaded.
-ZSH_THEME="mpilman"
+ZSH_THEME="agnoster"
 
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
@@ -40,9 +40,21 @@ alias -s c=vim
 alias -s cpp=vim
 alias -s h=vim
 alias -s hpp=vim
+alias ed='emacsclient -c'
+alias edn='emacsclient -nc'
+alias lldb='PATH=/usr/bin:$PATH lldb'
 
-export PATH=/opt/local/bin:/usr/local/bin:/usr/local/sbin:/opt/local/sbin:~/.cabal/bin:$PATH
-export EDITOR=vim
+PATH=/opt/local/bin:/usr/local/bin:/usr/local/sbin:/opt/local/sbin:~/.local/bin:~/bin:$PATH:/Users/mpilman/Applications/SnowSQL.app/Contents/MacOS
+if [ -e /home/vagrant/.nix-profile/etc/profile.d/nix.sh ]; then . /home/vagrant/.nix-profile/etc/profile.d/nix.sh; fi # added by Nix installer
+if [ -d $HOME/.cargo/bin ]; then PATH=$HOME/.cargo/bin:$PATH; fi # if cargo is used
+if [ -e $HOME/Projects/rustc-1.9.0 ]; then export RUST_SRC_PATH=$HOME/Projects/rustc-1.9.0/src; fi
+
+export EDITOR=emacs
+if [ -d /Applications/Emacs.app/ ]
+then
+	export EDITOR=emacsclient
+fi
+export PATH
 
 if [[ $HOST == bach* ]]
 then
@@ -55,3 +67,42 @@ then
     export http_proxy='http://proxy.ethz.ch:3128'
     export https_proxy='http://proxy.ethz.ch:3128'
 fi
+
+NIX_FILE=https://mpilman@github.com/mpilman/.home.git
+if [ -e $NIX_FILE ]
+then
+    . $NIX_FILE
+fi
+
+function gps {
+    if [ -z "$1" ]
+    then
+        echo "No parameter"
+        return
+    fi
+    ps ax | grep $1
+}
+
+function killproc {
+    zparseopts -D 9=force
+    if [ -z "$1" ]
+    then
+        echo "No parameter"
+        return
+    fi
+    gps $1 | cut -d ' ' -f 1 | xargs kill $force
+}
+
+function mgrep {
+    if [ -z "$1" ]
+    then
+		echo "Parameter 1 not set"
+    else
+        if [[ `uname` == 'Darwin' ]]
+        then
+            find -E . -regex '.*\.(h|cpp)' -and -not -name \*.g.cpp -print0 | xargs -0 grep -n "$1" | less
+        else
+            find . -regex '.*\.\(h\|cpp\)' -and -not -name \*.g.cpp -print0 | xargs -0 grep -n "$1" | less
+        fi
+    fi
+}

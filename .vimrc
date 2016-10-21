@@ -10,7 +10,8 @@ call vundle#begin()
 
 " let Vundle manage Vundle, required
 Plugin 'gmarik/Vundle.vim'
-Plugin 'Valloric/YouCompleteMe'
+Plugin 'tpope/vim-sleuth'
+" Plugin 'Valloric/YouCompleteMe'
 Plugin 'godlygeek/csapprox'
 Plugin 'vim-scripts/a.vim'
 Plugin 'kien/ctrlp.vim'
@@ -36,9 +37,14 @@ Plugin 'rust-lang/rust.vim'
 Plugin 'Raimondi/delimitMate'
 Plugin 'altercation/vim-colors-solarized'
 Plugin 'nanotech/jellybeans.vim'
+Plugin 'Shougo/vimproc.vim.git'
+Plugin 'eagletmt/ghcmod-vim.git'
+Plugin 'Twinside/vim-hoogle'
 
 call vundle#end()            " required
 filetype plugin indent on    " required
+
+set rtp+=/home/mpilman/.nix-profile/share/vim-plugins/youcompleteme
 
 set encoding=utf-8
 set t_Co=256
@@ -135,11 +141,11 @@ augroup LaTeX
 augroup END
 
 " Add header to new files
-autocmd BufNewFile *.cpp so ~/.home/header.txt
-autocmd BufNewFile *.c so ~/.home/header.txt
-autocmd BufNewFile *.h so ~/.home/header.txt
-autocmd BufNewFile *.hpp so ~/.home/header.txt
-autocmd BufNewFile *.java so ~/.home/header.txt
+" autocmd BufNewFile *.cpp so ~/.home/header.txt
+" autocmd BufNewFile *.c so ~/.home/header.txt
+" autocmd BufNewFile *.h so ~/.home/header.txt
+" autocmd BufNewFile *.hpp so ~/.home/header.txt
+" autocmd BufNewFile *.java so ~/.home/header.txt
 
 " Automatically close brackets
 " inoremap ( ()<left>
@@ -211,7 +217,16 @@ nnoremap D d$
 
 " Haskell
 let g:haskellmode_completion_ghc = 0
-autocmd FileType haskell setlocal omnifunc=necoghc#omnifunc
+let g:necoghc_enable_detailed_browse = 1
+augroup HaskellGroup
+    autocmd FileType haskell setlocal omnifunc=necoghc#omnifunc
+    autocmd FileType haskell nnoremap <localleader>l :GhcModLint<CR>
+    autocmd FileType haskell nnoremap <localleader>c :GhcModCheck<CR>
+    autocmd FileType haskell nnoremap <localleader>t :GhcModType<CR>
+    autocmd FileType haskell nnoremap <localleader>n :GhcModTypeClear<CR>
+    autocmd FileType haskell nnoremap <localleader>s :GhcModSigCodegen<CR>
+    autocmd FileType haskell set tags=tags;/,codex.tags;/
+augroup END
 
 " Python special case
 autocmd FileType python setlocal expandtab shiftwidth=4 tabstop=4 softtabstop=4
@@ -225,7 +240,7 @@ set grepprg=grep\ -nH\ $*
 nnoremap ,cd :cd %:p:h<CR>
 
 " CTRL-P
-let g:ctrlp_working_path_mode = 'r'
+let g:ctrlp_working_path_mode = 'rw'
 nnoremap <leader>v :CtrlPMRUFiles<CR>
 nnoremap <leader>b :CtrlPBuffer<CR>
 " Airline
@@ -239,6 +254,7 @@ augroup Haskell
 nnoremap <leader>g :YcmCompleter GoTo<CR>
 nnoremap <leader>D :YcmDiag<CR>
 nnoremap <leader>F :YcmCompleter FixIt<CR>
+" let g:ycm_path_to_python_interpreter = '/home/vagrant/bin/python'
 " let g:ycm_autoclose_preview_window_after_completion = 1
 augroup CloseAutocompletePreview
     autocmd InsertLeave *.hpp,*.py :pclose
