@@ -75,6 +75,7 @@ Return a list of installed packages or nil for every skipped package."
  'magit
  'magit-svn
  'evil-magit
+ 'tide
  )
 
 ;;; DOOM theme
@@ -231,6 +232,29 @@ Return a list of installed packages or nil for every skipped package."
 (add-hook 'prog-mode-hook #'rainbow-delimiters-mode)
 
 (setq company-global-modes '(not gud-mode))
+
+;;; TypeScript
+(defun setup-tide-mode ()
+  (interactive)
+  (tide-setup)
+  (flycheck-mode +1)
+  (setq flycheck-check-syntax-automatically '(save mode-enabled))
+  (eldoc-mode +1)
+  ;; company is an optional dependency. You have to
+  ;; install it separately via package-install
+  ;; `M-x package-install [ret] company`
+  (company-mode +1))
+
+;; aligns annotation to the right hand side
+(setq company-tooltip-align-annotations t)
+
+;; formats the buffer before saving
+(add-hook 'before-save-hook 'tide-format-before-save)
+
+(add-hook 'typescript-mode-hook #'setup-tide-mode)
+
+;; format options
+(setq tide-format-options '(:insertSpaceAfterFunctionKeywordForAnonymousFunctions t :placeOpenBraceOnNewLineForFunctions nil))
 
 ;;; Python
 (defun my/python-mode-hook ()
@@ -607,4 +631,4 @@ _fr_: format region
     ("3c83b3676d796422704082049fc38b6966bcad960f896669dfc21a7a37a748fa" "b317b64ade8a19383695b1331496e80ae9117cfa57ab5287c436ceeded021d4b" default)))
  '(package-selected-packages
    (quote
-    (zenburn-theme smart-mode-line slime-company rustfmt rtags relative-line-numbers realgud rainbow-identifiers rainbow-delimiters racer powerline paredit org-jira neotree markdown-mode magit-svn labburn-theme hydra helm-projectile flycheck-rust fiplr evil-surround evil-magit evil-leader evil-escape csharp-mode company-jedi company-auctex cmake-font-lock clang-format cargo back-button auctex-latexmk))))
+    (tide zenburn-theme smart-mode-line slime-company rustfmt rtags relative-line-numbers realgud rainbow-identifiers rainbow-delimiters racer powerline paredit org-jira neotree markdown-mode magit-svn labburn-theme hydra helm-projectile flycheck-rust fiplr evil-surround evil-magit evil-leader evil-escape csharp-mode company-jedi company-auctex cmake-font-lock clang-format cargo back-button auctex-latexmk))))
