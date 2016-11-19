@@ -41,7 +41,6 @@ Return a list of installed packages or nil for every skipped package."
 (ensure-package-installed
  'evil
  'evil-surround
- 'evil-escape
  'zenburn-theme
  'relative-line-numbers
  'evil-leader
@@ -170,6 +169,8 @@ Return a list of installed packages or nil for every skipped package."
 ;;; flycheck
 (require 'flycheck)
 (global-flycheck-mode)
+(setq flycheck-global-modes '(not LaTeX-mode latex-mode))
+
 
 ;;; Magit
 (require 'evil-magit)
@@ -394,7 +395,6 @@ Return a list of installed packages or nil for every skipped package."
 (setq fiplr-root-markers '("Makefile" "README"))
 
 ;;; key bindings
-(setq-default evil-escape-key-sequence "jk")
 (evil-leader/set-leader ",")
 (evil-leader/set-key
   "m" 'magit-status
@@ -631,4 +631,4 @@ _fr_: format region
     ("3c83b3676d796422704082049fc38b6966bcad960f896669dfc21a7a37a748fa" "b317b64ade8a19383695b1331496e80ae9117cfa57ab5287c436ceeded021d4b" default)))
  '(package-selected-packages
    (quote
-    (tide zenburn-theme smart-mode-line slime-company rustfmt rtags relative-line-numbers realgud rainbow-identifiers rainbow-delimiters racer powerline paredit org-jira neotree markdown-mode magit-svn labburn-theme hydra helm-projectile flycheck-rust fiplr evil-surround evil-magit evil-leader evil-escape csharp-mode company-jedi company-auctex cmake-font-lock clang-format cargo back-button auctex-latexmk))))
+    (dockerfile-mode docker sr-speedbar tide zenburn-theme smart-mode-line slime-company rustfmt rtags relative-line-numbers realgud rainbow-identifiers rainbow-delimiters racer powerline paredit org-jira neotree markdown-mode magit-svn labburn-theme hydra helm-projectile flycheck-rust fiplr evil-surround evil-magit evil-leader evil-escape csharp-mode company-jedi company-auctex cmake-font-lock clang-format cargo back-button auctex-latexmk))))

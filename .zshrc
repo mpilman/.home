@@ -44,6 +44,8 @@ alias ed='emacsclient -c'
 alias edn='emacsclient -nc'
 alias lldb='PATH=/usr/bin:$PATH lldb'
 
+unalias rm
+
 PATH=/opt/local/bin:/usr/local/bin:/usr/local/sbin:/opt/local/sbin:~/.local/bin:~/bin:$PATH:/Users/mpilman/Applications/SnowSQL.app/Contents/MacOS
 if [ -e /home/vagrant/.nix-profile/etc/profile.d/nix.sh ]; then . /home/vagrant/.nix-profile/etc/profile.d/nix.sh; fi # added by Nix installer
 if [ -d $HOME/.cargo/bin ]; then PATH=$HOME/.cargo/bin:$PATH; fi # if cargo is used
