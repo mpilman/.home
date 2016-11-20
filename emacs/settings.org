@@ -1,8 +1,8 @@
 * General settings
 ** Make emacs less annoying
 #+BEGIN_SRC emacs-lisp
-;;; Visible-bell also deactivites the normal bell which is annoying
-(setq ring-bell-function 'ignore)
+  ;;; Visible-bell also deactivites the normal bell which is annoying
+  (setq ring-bell-function 'ignore)
 #+END_SRC
 ** Configure the autosace behavior
 #+BEGIN_SRC emacs-lisp
@@ -132,7 +132,6 @@
   (with-eval-after-load 'flycheck
     (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc)))
 #+END_SRC
-** Magit
 ** Company
 #+BEGIN_SRC emacs-lisp
   (require 'company)
