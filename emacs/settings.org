@@ -28,6 +28,8 @@
   (tool-bar-mode -1)
   (require 'doom-themes)
   (load-theme 'doom-one t)
+  (require 'all-the-icons)
+  (require 'spaceline-config)
   (use-package spaceline-all-the-icons :after spaceline)
   (use-package spaceline :after powerline :config (setq-default mode-line-format '("%e" (:eval (spaceline-ml-ati)))))
 
