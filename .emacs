@@ -30,7 +30,7 @@ Return a list of installed packages or nil for every skipped package."
 (ensure-package-installed
  'evil
  'evil-surround
- 'doom-themes
+ 'zenburn-theme
  'spaceline
  'all-the-icons
  'relative-line-numbers
@@ -67,6 +67,7 @@ Return a list of installed packages or nil for every skipped package."
  'evil-magit
  'tide
  'use-package
+ 'exec-path-from-shell
  )
 
 (require 'org)
@@ -160,12 +161,14 @@ Return a list of installed packages or nil for every skipped package."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(custom-enabled-themes (quote (doom-one)))
- '(custom-safe-themes
-   (quote
-    ("3c83b3676d796422704082049fc38b6966bcad960f896669dfc21a7a37a748fa" "b317b64ade8a19383695b1331496e80ae9117cfa57ab5287c436ceeded021d4b" default)))
  '(ispell-dictionary "en_US")
  '(package-selected-packages
    (quote
-    (doom-themes all-the-icons use-package spaceline spacemacs-theme yaml-mode dockerfile-mode docker sr-speedbar tide zenburn-theme smart-mode-line slime-company rustfmt rtags relative-line-numbers realgud rainbow-identifiers rainbow-delimiters racer powerline paredit org-jira neotree markdown-mode magit-svn labburn-theme hydra helm-projectile flycheck-rust fiplr evil-surround evil-magit evil-leader evil-escape csharp-mode company-jedi company-auctex cmake-font-lock clang-format cargo back-button auctex-latexmk)))
+    (exec-path-from-shell all-the-icons use-package spaceline spacemacs-theme yaml-mode dockerfile-mode docker sr-speedbar tide zenburn-theme smart-mode-line slime-company rustfmt rtags relative-line-numbers realgud rainbow-identifiers rainbow-delimiters racer powerline paredit org-jira neotree markdown-mode magit-svn labburn-theme hydra helm-projectile flycheck-rust fiplr evil-surround evil-magit evil-leader evil-escape csharp-mode company-jedi company-auctex cmake-font-lock clang-format cargo back-button auctex-latexmk)))
  '(tool-bar-mode nil))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(default ((t (:inherit nil :stipple nil :background "#3f3f3f" :foreground "#dadaca" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 150 :width normal :foundry "nil" :family "Meslo LG L for Powerline")))))
