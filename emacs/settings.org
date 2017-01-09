@@ -30,9 +30,9 @@
   (when (memq window-system '(mac ns))
     (exec-path-from-shell-initialize))
   ;; set the default font
-  (if (eq system-type 'darwin)
-      (add-to-list 'default-frame-alist '(font . "Droid Sans Mono-18"))
-    (add-to-list 'default-frame-alist '(font . "Droid Sans Mono-12")))
+   (if (eq system-type 'darwin)
+       (add-to-list 'default-frame-alist '(font . "Droid Sans Mono-18"))
+     (add-to-list 'default-frame-alist '(font . "Droid Sans Mono-12")))
 
   (tool-bar-mode -1)
   (load-theme 'zenburn t)
@@ -93,6 +93,35 @@
   ; '(linum ((t (:background "#3f3f3f" :foreground "#636363" :height 1.0)))))
 
 #+END_SRC
+
+** Scrolling
+#+BEGIN_SRC emacs-lisp
+  (setq scroll-conservatively 101) ;; move minimum when cursor exits view, instead of recentering
+  (setq mouse-wheel-scroll-amount '(1)) ;; mouse scroll moves 1 line at a time, instead of 5 lines
+  (setq mouse-wheel-progressive-speed nil) ;; on a long mouse scroll keep scrolling by 1 line
+#+END_SRC
+
+** Annoying windows stealing
+#+BEGIN_SRC emacs-lisp
+  (defadvice pop-to-buffer (before cancel-other-window first)
+    (ad-set-arg 1 nil))
+
+  (ad-activate 'pop-to-buffer)
+
+  ;; Toggle window dedication
+  (defun toggle-window-dedicated ()
+    "Toggle whether the current active window is dedicated or not"
+    (interactive)
+    (message
+     (if (let (window (get-buffer-window (current-buffer)))
+           (set-window-dedicated-p window 
+                                   (not (window-dedicated-p window))))
+         "Window '%s' is dedicated"
+       "Window '%s' is normal")
+     (current-buffer)))
+
+
+#+END_SRC
 * Org-mode
 #+BEGIN_SRC emacs-lisp
 (setq org-src-fontify-natively t)
@@ -114,24 +143,25 @@
 #+END_SRC
 *** Key bindings
 #+BEGIN_SRC emacs-lisp
-(evil-leader/set-leader ",")
-(evil-leader/set-key
-  "m" 'magit-status
-  "b" 'helm-buffers-list
-  "d" 'kill-buffer
-  "p" 'point-to-register
-  "j" 'jump-to-register)
+  (evil-leader/set-leader ",")
+  (evil-leader/set-key
+    "m" 'magit-status
+    "b" 'helm-buffers-list
+    "d" 'kill-buffer
+    "p" 'point-to-register
+    "j" 'jump-to-register
+    "s" 'toggle-window-dedicated)
 
 
-(define-key evil-normal-state-map "L" "$")
-(define-key evil-normal-state-map "H" "^")
-(define-key evil-normal-state-map (kbd "C-p") 'fiplr-find-file)
-(define-key evil-normal-state-map "\\" 'next-buffer)
-(define-key evil-normal-state-map "|" 'previous-buffer)
-(define-key evil-normal-state-map "gt" 'next-frame)
+  (define-key evil-normal-state-map "L" "$")
+  (define-key evil-normal-state-map "H" "^")
+  (define-key evil-normal-state-map (kbd "C-p") 'fiplr-find-file)
+  (define-key evil-normal-state-map "\\" 'next-buffer)
+  (define-key evil-normal-state-map "|" 'previous-buffer)
+  (define-key evil-normal-state-map "gt" 'next-frame)
 
-(define-key evil-visual-state-map "H" "^")
-(define-key evil-visual-state-map "L" "$")
+  (define-key evil-visual-state-map "H" "^")
+  (define-key evil-visual-state-map "L" "$")
 #+END_SRC
 ** Flycheck
 #+BEGIN_SRC emacs-lisp
@@ -167,7 +197,17 @@
 #+END_SRC
 ** helm
 #+BEGIN_SRC emacs-lisp
-(require 'helm-config)
+  (require 'helm-config)
+  (helm-mode 1)
+
+  (setq helm-split-window-in-side-p t)
+
+  (add-to-list 'display-buffer-alist
+               '("\\`\\*helm.*\\*\\'"
+                 (display-buffer-in-side-window)
+                 (inhibit-same-window . t)
+                 (window-height . 0.3)))
+
 #+END_SRC
 ** fiplr
 #+BEGIN_SRC emacs-lisp
@@ -380,20 +420,23 @@ _fr_: format region
 #+END_SRC
 *** rtags
 #+BEGIN_SRC emacs-lisp
-(require 'company-rtags)
-(setq rtags-autostart-diagnostics t)
-(rtags-diagnostics)
-(setq rtags-completions-enabled t)
-(push 'company-rtags company-backends)
-(global-company-mode)
-(require 'flycheck-rtags)
+  (require 'company-rtags)
+  (setq rtags-autostart-diagnostics t)
+  (rtags-diagnostics)
+  (setq rtags-completions-enabled t)
+  (push 'company-rtags company-backends)
+  (global-company-mode)
+  (require 'flycheck-rtags)
+  (require 'rtags-helm)
 
-(defun my-flycheck-rtags-setup ()
-  (flycheck-select-checker 'rtags)
-  (setq-local flycheck-highlighting-mode nil)
-  (setq-local flycheck-check-syntax-automatically nil))
+  (defun my-flycheck-rtags-setup ()
+    (flycheck-select-checker 'rtags)
+    (setq-local flycheck-highlighting-mode nil)
+    (setq-local flycheck-check-syntax-automatically nil))
 
-(add-hook 'c-mode-common-hook #'my-flycheck-rtags-setup)
+  (add-hook 'c-mode-common-hook #'my-flycheck-rtags-setup)
+
+  (setq rtags-use-helm t)
 
 #+END_SRC
 *** Key bindings
