@@ -434,7 +434,9 @@ _fr_: format region
     (setq-local flycheck-highlighting-mode nil)
     (setq-local flycheck-check-syntax-automatically nil))
 
-  (add-hook 'c-mode-common-hook #'my-flycheck-rtags-setup)
+  (add-hook 'c-mode-hook #'my-flycheck-rtags-setup)
+  (add-hook 'c++-mode-hook #'my-flycheck-rtags-setup)
+  (add-hook 'objc-mode-hook #'my-flycheck-rtags-setup)
 
   (setq rtags-use-helm t)
 
@@ -466,4 +468,13 @@ _fr_: format region
 (add-hook 'racer-mode-hook #'eldoc-mode)
 
 (add-hook 'racer-mode-hook #'company-mode)
+#+END_SRC
+** Java
+#+BEGIN_SRC emacs-lisp
+  (require 'meghanada)
+  (add-hook 'java-mode-hook
+            (lambda ()
+              ;; meghanada-mode on
+              (meghanada-mode t)
+              (add-hook 'before-save-hook 'delete-trailing-whitespace)))
 #+END_SRC
