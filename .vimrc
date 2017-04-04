@@ -198,7 +198,6 @@ nnoremap <leader>sv :source $MYVIMRC<CR>
 
 " Use jk to go out of insert mode
 inoremap jk <ESC>
-inoremap <ESC> <NOP>
 
 " Navigation
 inoremap <C-h> <left>
