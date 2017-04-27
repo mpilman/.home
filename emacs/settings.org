@@ -22,7 +22,7 @@
   ;;; retore split screens
   (winner-mode 1)
 #+END_SRC
-   
+
 ** Look and feel
 #+BEGIN_SRC emacs-lisp
   ;; Make sure, path is the same as in shell
@@ -114,7 +114,7 @@
     (interactive)
     (message
      (if (let (window (get-buffer-window (current-buffer)))
-           (set-window-dedicated-p window 
+           (set-window-dedicated-p window
                                    (not (window-dedicated-p window))))
          "Window '%s' is dedicated"
        "Window '%s' is normal")
@@ -322,7 +322,7 @@ _fr_: format region
 
   ;; use Skim as default pdf viewer
   ;; Skim's displayline is used for forward search (from .tex to .pdf)
-  ;; option -b highlights the current line; option -g opens Skim in the background  
+  ;; option -b highlights the current line; option -g opens Skim in the background
   (setq TeX-view-program-selection '((output-pdf "PDF Viewer")))
   (setq TeX-view-program-list
        '(("PDF Viewer" "/Applications/Skim.app/Contents/SharedSupport/displayline -b -g %n %o %b")))
@@ -361,10 +361,10 @@ _fr_: format region
 #+END_SRC
 ** Python
 #+BEGIN_SRC emacs-lisp
-(defun my/python-mode-hook ()
-  (add-to-list 'company-backends 'company-jedi)
-  (flycheck-define-checker python-flake8 "Use the flake8 checker"))
-(add-hook 'python-mode-hook 'my/python-mode-hook)
+  (setq py-python-command "/usr/local/bin/python3")
+  (defun my/python-mode-hook ()
+    (add-to-list 'company-backends 'company-jedi))
+  (add-hook 'python-mode-hook 'my/python-mode-hook)
 #+END_SRC
 ** Lisp
 #+BEGIN_SRC emacs-lisp
@@ -443,21 +443,22 @@ _fr_: format region
 #+END_SRC
 *** Key bindings
 #+BEGIN_SRC emacs-lisp
-(evil-define-key 'visual c++-mode-map "=" 'clang-format-buffer)
-(evil-leader/set-key-for-mode 'c++-mode
-  "g" 'rtags-find-symbol-at-point
-  "s" 'rtags-find-symbol
-  "h" 'rtags-location-stack-back
-  "l" 'rtags-location-stack-forward
-  "f" 'rtags-fixit
-  "=" 'clang-format-buffer)
+  (evil-define-key 'visual c++-mode-map "=" 'clang-format-buffer)
+  (evil-leader/set-key-for-mode 'c++-mode
+    "g" 'rtags-find-symbol-at-point
+    "s" 'rtags-find-symbol
+    "h" 'rtags-location-stack-back
+    "l" 'rtags-location-stack-forward
+    "f" 'rtags-fixit
+    "i" 'rtags-imenu
+    "=" 'clang-format-buffer)
 
-(evil-leader/set-key-for-mode 'c-mode
-  "g" 'rtags-find-symbol-at-point
-  "s" 'rtags-find-symbol
-  "h" 'rtags-location-stack-back
-  "l" 'rtags-location-stack-forward
-  "=" 'clang-format-buffer)
+  (evil-leader/set-key-for-mode 'c-mode
+    "g" 'rtags-find-symbol-at-point
+    "s" 'rtags-find-symbol
+    "h" 'rtags-location-stack-back
+    "l" 'rtags-location-stack-forward
+    "=" 'clang-format-buffer)
 
 #+END_SRC
 ** Rust
