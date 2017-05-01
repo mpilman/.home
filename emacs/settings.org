@@ -427,7 +427,7 @@ _fr_: format region
   (push 'company-rtags company-backends)
   (global-company-mode)
   (require 'flycheck-rtags)
-  (require 'rtags-helm)
+  (require 'helm-rtags)
 
   (defun my-flycheck-rtags-setup ()
     (flycheck-select-checker 'rtags)

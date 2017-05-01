@@ -37,6 +37,9 @@ Return a list of installed packages or nil for every skipped package."
  'evil-leader
  'helm
  'rtags
+ 'company-rtags
+ 'flycheck-rtags
+ 'helm-rtags
  'company
  'fiplr
  'neotree
