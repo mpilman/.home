@@ -53,13 +53,15 @@ if [ -e /home/vagrant/.nix-profile/etc/profile.d/nix.sh ]; then . /home/vagrant/
 if [ -d $HOME/.cargo/bin ]; then PATH=$HOME/.cargo/bin:$PATH; fi # if cargo is used
 if [ -e $HOME/Projects/rustc-1.9.0 ]; then export RUST_SRC_PATH=$HOME/Projects/rustc-1.9.0/src; fi
 
-export EDITOR=emacs
+EDITOR=emacs
 if [ -d /Applications/Emacs.app/ ]
-    export EDITOR=/Applications/Emacs.app/Contents/MacOS/bin/emacsclient
 then
-    export EDITOR=emacsclient
+    EDITOR=/Applications/Emacs.app/Contents/MacOS/bin/emacsclient
+else
+    EDITOR=emacsclient
 fi
 export PATH
+export EDITOR
 
 if [[ $HOST == bach* ]]
 then
