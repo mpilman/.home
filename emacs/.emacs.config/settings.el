@@ -29,10 +29,10 @@
 
 (tool-bar-mode -1)
 (load-theme 'zenburn t)
-(require 'all-the-icons)
-(require 'spaceline-config)
-(use-package spaceline-all-the-icons :after spaceline)
-(use-package spaceline :after powerline :config (setq-default mode-line-format '("%e" (:eval (spaceline-ml-ati)))))
+;(require 'all-the-icons)
+;(require 'spaceline-config)
+;(use-package spaceline-all-the-icons :after spaceline)
+;(use-package spaceline :after powerline :config (setq-default mode-line-format '("%e" (:eval (spaceline-ml-ati)))))
 
 (require 'font-lock)
 (defun --copy-face (new-face face)
@@ -51,8 +51,9 @@
 (global-font-lock-mode t)
 (setq font-lock-maximum-decoration t)
 
-(require 'relative-line-numbers)
-(global-relative-line-numbers-mode)
+(require 'nlinum-relative)
+(nlinum-relative-setup-evil)
+(add-hook 'prog-mode-hook 'nlinum-relative-mode)
 
 (if (eq system-type 'darwin)
     (custom-set-faces
@@ -360,11 +361,12 @@ _fr_: format region
            ))
         ) t)
 
+(use-package company-rtags)
+(use-package flycheck-rtags)
 (setq rtags-autostart-diagnostics t)
 (rtags-diagnostics)
-(setq rtags-completions-enabled t)
+(setq rtags-completions-enabled nil)
 (push 'company-rtags company-backends)
-(global-company-mode)
 (setq rtags-use-helm t)
 
 (defun my-flycheck-rtags-setup ()
@@ -377,6 +379,7 @@ _fr_: format region
 (add-hook 'objc-mode-hook #'my-flycheck-rtags-setup)
 
 (setq rtags-use-helm t)
+(global-company-mode)
 
 (evil-define-key 'visual c++-mode-map "=" 'clang-format-buffer)
 (evil-leader/set-key-for-mode 'c++-mode

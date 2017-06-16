@@ -11,7 +11,7 @@ call vundle#begin()
 " let Vundle manage Vundle, required
 Plugin 'gmarik/Vundle.vim'
 Plugin 'tpope/vim-sleuth'
-" Plugin 'Valloric/YouCompleteMe'
+Plugin 'Valloric/YouCompleteMe'
 Plugin 'godlygeek/csapprox'
 Plugin 'vim-scripts/a.vim'
 Plugin 'kien/ctrlp.vim'
@@ -40,11 +40,12 @@ Plugin 'nanotech/jellybeans.vim'
 Plugin 'Shougo/vimproc.vim.git'
 Plugin 'eagletmt/ghcmod-vim.git'
 Plugin 'Twinside/vim-hoogle'
+Plugin 'lyuts/vim-rtags'
+Plugin 'chiel92/vim-autoformat'
+Plugin 'jeaye/color_coded'
 
 call vundle#end()            " required
 filetype plugin indent on    " required
-
-set rtp+=/home/mpilman/.nix-profile/share/vim-plugins/youcompleteme
 
 set encoding=utf-8
 set t_Co=256
@@ -87,6 +88,9 @@ set directory=~/.vim/swap//
 set undodir=~/.vim/undo//
 set noswapfile
 
+" Autoformat
+nnoremap <leader>= :Autoformat<CR>
+
 " Searching
 set showmatch
 set hlsearch
@@ -103,6 +107,25 @@ function! FoldMark()
     set foldmethod=marker
     set foldcolumn=3
 endfunction
+
+" Enable omni completion.
+autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
+autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
+autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
+autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
+autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
+
+" Enable heavy omni completion.
+if !exists('g:neocomplete#sources#omni#input_patterns')
+  let g:neocomplete#sources#omni#input_patterns = {}
+endif
+"let g:neocomplete#sources#omni#input_patterns.php = '[^. \t]->\h\w*\|\h\w*::'
+"let g:neocomplete#sources#omni#input_patterns.c = '[^.[:digit:] *\t]\%(\.\|->\)'
+"let g:neocomplete#sources#omni#input_patterns.cpp = '[^.[:digit:] *\t]\%(\.\|->\)\|\h\w*::'
+
+" For perlomni.vim setting.
+" https://github.com/c9s/perlomni.vim
+let g:neocomplete#sources#omni#input_patterns.perl = '\h\w*->\h\w*\|\h\w*::'
 
 
 " Latex-Box
@@ -162,7 +185,7 @@ augroup END
 " inoremap [<space> [<space> <space>]<left><left>
 
 " Font
-set guifont=Meslo\ LG\ M\ for\ Powerline:h12
+set guifont=Droid\ Sans\ Mono\ for\ Powerline:h15
 
 " Rust
 let $RUST_SRC_PATH="/Users/mpilman/Projects/rust/src/"
@@ -247,12 +270,13 @@ let g:airline_powerline_fonts = 1
 let g:airline#extensions#tabline#enabled = 1
 " Neco-ghc
 augroup Haskell
-    autocmd FileType *.hs setlocal omnifunc=necoghc#omnifunc
-augroup Haskell
+  autocmd FileType *.hs setlocal omnifunc=necoghc#omnifunc
+augroup END
+
+" Rtags
+
+
 " YCM
-nnoremap <leader>g :YcmCompleter GoTo<CR>
-nnoremap <leader>D :YcmDiag<CR>
-nnoremap <leader>F :YcmCompleter FixIt<CR>
 " let g:ycm_path_to_python_interpreter = '/home/vagrant/bin/python'
 " let g:ycm_autoclose_preview_window_after_completion = 1
 augroup CloseAutocompletePreview
@@ -260,8 +284,8 @@ augroup CloseAutocompletePreview
     autocmd InsertLeave *.h,*.py :pclose
     autocmd InsertLeave *.cpp,*.py :pclose
 augroup END
-let g:ycm_extra_conf_vim_data = ['getcwd()']
-let g:ycm_global_ycm_extra_conf = '~/.vim/ycm_extra_conf.py'
+" let g:ycm_extra_conf_vim_data = ['getcwd()']
+" let g:ycm_global_ycm_extra_conf = '~/.vim/ycm_extra_conf.py'
 let g:ycm_semantic_triggers = {'haskell' : ['.']}
 let g:ycm_filetype_blacklist = {'tex' : 1}
 "
