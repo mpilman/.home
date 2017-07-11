@@ -35,6 +35,9 @@ Return a list of installed packages or nil for every skipped package."
  'evil-leader
  'helm
  'rtags
+ 'ycmd
+ 'company-ycmd
+ 'flycheck-ycmd
  'helm-rtags
  'flycheck-rtags
  'company
@@ -69,6 +72,8 @@ Return a list of installed packages or nil for every skipped package."
  'use-package
  'exec-path-from-shell
  'rpm-spec-mode
+ 'multiple-cursors
+ 'mc-extras
  )
 
 (require 'org)
@@ -165,7 +170,7 @@ Return a list of installed packages or nil for every skipped package."
  '(ispell-dictionary "en_US")
  '(package-selected-packages
    (quote
-    (nlinum-relative company-rtags flycheck-rtags helm-rtags rpm-spec-mode omnisharp meghanada exec-path-from-shell use-package spacemacs-theme yaml-mode dockerfile-mode docker sr-speedbar tide zenburn-theme smart-mode-line slime-company rustfmt rtags relative-line-numbers realgud rainbow-identifiers rainbow-delimiters racer powerline paredit org-jira neotree markdown-mode magit-svn labburn-theme hydra helm-projectile flycheck-rust fiplr evil-surround evil-magit evil-leader evil-escape csharp-mode company-jedi company-auctex cmake-font-lock clang-format cargo back-button auctex-latexmk)))
+    (mc-extras multiple-cursors company-ycmd flycheck-ycmd ycmd nlinum-relative company-rtags flycheck-rtags helm-rtags rpm-spec-mode omnisharp meghanada exec-path-from-shell use-package spacemacs-theme yaml-mode dockerfile-mode docker sr-speedbar tide zenburn-theme smart-mode-line slime-company rustfmt rtags relative-line-numbers realgud rainbow-identifiers rainbow-delimiters racer powerline paredit org-jira neotree markdown-mode magit-svn labburn-theme hydra helm-projectile flycheck-rust fiplr evil-surround evil-magit evil-leader evil-escape csharp-mode company-jedi company-auctex cmake-font-lock clang-format cargo back-button auctex-latexmk)))
  '(tool-bar-mode nil))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.

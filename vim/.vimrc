@@ -42,7 +42,12 @@ Plugin 'eagletmt/ghcmod-vim.git'
 Plugin 'Twinside/vim-hoogle'
 Plugin 'lyuts/vim-rtags'
 Plugin 'chiel92/vim-autoformat'
-Plugin 'jeaye/color_coded'
+if has('nvim')
+  Plugin 'arakashic/chromatica.nvim'
+else
+  Plugin 'jeaye/color_coded'
+endif
+Plugin 'CoatiSoftware/vim-sourcetrail'
 
 call vundle#end()            " required
 filetype plugin indent on    " required
@@ -60,6 +65,9 @@ set backspace=2
 set smartindent
 set smarttab
 set mouse=a
+if has('mouse_sgr')
+  set ttymouse=sgr
+endif
 set hidden
 set cinoptions=:0,g0,t0,N-s
 set scrolloff=15
@@ -94,7 +102,7 @@ nnoremap <leader>= :Autoformat<CR>
 " Searching
 set showmatch
 set hlsearch
-nnoremap <leader><space> :noh<cr>:call clearmatches()<cr>
+nnoremap <esc> :noh<return><esc>
 nnoremap n nzzzv
 nnoremap N Nzzzv
 nnoremap <silent> <leader>/ :execute 'vimgrep /'.@/.'/g %'<CR>:copen<CR>
@@ -185,7 +193,9 @@ augroup END
 " inoremap [<space> [<space> <space>]<left><left>
 
 " Font
-set guifont=Droid\ Sans\ Mono\ for\ Powerline:h15
+if !has('nvim')
+  set guifont=Droid\ Sans\ Mono\ for\ Powerline:h15
+endif
 
 " Rust
 let $RUST_SRC_PATH="/Users/mpilman/Projects/rust/src/"
@@ -213,7 +223,6 @@ nnoremap <C-l> <C-w>l
 nnoremap - ddkP
 nnoremap _ ddp
 nnoremap <leader>( %x``x
-inoremap <C-o> <esc>O
 
 " For fast editing vimrc file
 nnoremap <leader>ev :vsplit $MYVIMRC<CR>
@@ -273,6 +282,11 @@ augroup Haskell
   autocmd FileType *.hs setlocal omnifunc=necoghc#omnifunc
 augroup END
 
+" SourceTrail
+let g:sourcetrail_autostart = 1
+nnoremap <leader>as :SourcetrailRefresh<CR>
+nnoremap <leader>aa :SourcetrailActivateToken<CR>
+
 " Rtags
 
 
@@ -288,13 +302,15 @@ augroup END
 " let g:ycm_global_ycm_extra_conf = '~/.vim/ycm_extra_conf.py'
 let g:ycm_semantic_triggers = {'haskell' : ['.']}
 let g:ycm_filetype_blacklist = {'tex' : 1}
-"
-" Semantic Highlight
-nnoremap <leader>s :SemanticHighlight<CR>
+nnoremap <leader>f :YcmCompleter FixIt<CR>
+nnoremap <leader>g :YcmCompleter GoTo<CR>
+nnoremap <leader>t :YcmCompleter GetType<CR>
 
-" Clighter
-let g:clighter_libclang_file = '/Applications/Xcode.app//Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/libclang.dylib'
-let g:clighter_highlight_groups = ["clighterMacroInstantiation","clighterTypeRef","clighterStructDecl","clighterClassDecl","clighterEnumDecl","clighterEnumConstantDecl","clighterDeclRefExprEnum","clighterCursorDefRef","clighterFunctionDecl","clighterDeclRefExprCall","clighterMemberRefExpr","clighterNamespace"]
+" Clamp
+if has('nvim')
+  let g:chromatica#libclang_path = '/Applications/Xcode.app//Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/libclang.dylib'
+  let g:chromatica#enable_at_startup=1
+endif
 
 " Configure make to work with cmake
 function! s:currentDirName()

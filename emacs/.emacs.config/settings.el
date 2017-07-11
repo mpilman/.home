@@ -107,6 +107,11 @@
      "Window '%s' is normal")
    (current-buffer)))
 
+(require 'multiple-cursors)
+(global-set-key (kbd "C->") 'mc/mark-next-like-this)
+(global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
+(global-set-key (kbd "M-d") 'mc/mark-next-like-this-word)
+
 (setq org-src-fontify-natively t)
 (add-to-list 'auto-mode-alist '("\\.org\\'" . org-mode))
 
@@ -361,12 +366,24 @@ _fr_: format region
            ))
         ) t)
 
-(use-package company-rtags)
+; Completion
+(require 'ycmd)
+(add-hook 'after-init-hook 'global-ycmd-mode)
+(set-variable 'ycmd-server-command
+              '("/usr/local/Cellar/python/2.7.13/Frameworks/Python.framework/Versions/2.7/Resources/Python.app/Contents/MacOS/Python"
+                "/Users/mpilman/.home/vim/.vim/bundle/YouCompleteMe/python/ycm/../../third_party/ycmd/ycmd"))
+(set-variable 'ycmd-extra-conf-whitelist '("~/Projects/*"))
+
+(require 'company-ycmd)
+(company-ycmd-setup)
+(global-company-mode)
+
+;(use-package company-rtags)
 (use-package flycheck-rtags)
 (setq rtags-autostart-diagnostics t)
 (rtags-diagnostics)
 (setq rtags-completions-enabled nil)
-(push 'company-rtags company-backends)
+;(push 'company-rtags company-backends)
 (setq rtags-use-helm t)
 
 (defun my-flycheck-rtags-setup ()
@@ -377,9 +394,6 @@ _fr_: format region
 (add-hook 'c-mode-hook #'my-flycheck-rtags-setup)
 (add-hook 'c++-mode-hook #'my-flycheck-rtags-setup)
 (add-hook 'objc-mode-hook #'my-flycheck-rtags-setup)
-
-(setq rtags-use-helm t)
-(global-company-mode)
 
 (evil-define-key 'visual c++-mode-map "=" 'clang-format-buffer)
 (evil-leader/set-key-for-mode 'c++-mode
