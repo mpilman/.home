@@ -102,7 +102,7 @@ nnoremap <leader>= :Autoformat<CR>
 " Searching
 set showmatch
 set hlsearch
-nnoremap <esc> :noh<return><esc>
+"nnoremap <esc> :noh<CR>
 nnoremap n nzzzv
 nnoremap N Nzzzv
 nnoremap <silent> <leader>/ :execute 'vimgrep /'.@/.'/g %'<CR>:copen<CR>
