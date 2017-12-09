@@ -3,11 +3,12 @@ AlignConsecutiveAssignments: 'true'
 AllowAllParametersOfDeclarationOnNextLine: 'true'
 AlwaysBreakTemplateDeclarations: 'true'
 BreakConstructorInitializersBeforeComma: 'true'
-ConstructorInitializerIndentWidth: '2'
+ConstructorInitializerIndentWidth: '4'
 ContinuationIndentWidth: '2'
 IndentWidth: '4'
 NamespaceIndentation: None
 TabWidth: '4'
 UseTab: Never
-
+ColumnLimit:     80
+BreakConstructorInitializersBeforeComma: true
 ...

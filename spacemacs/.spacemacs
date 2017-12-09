@@ -31,8 +31,13 @@ values."
    ;; List of configuration layers to load.
    dotspacemacs-configuration-layers
    '(
+     html
+     typescript
      javascript
      python
+     (ruby :variables ruby-enable-enh-ruby-mode t)
+     rust
+     latex
      ;; ----------------------------------------------------------------
      ;; Example of useful layers you may want to use right away.
      ;; Uncomment some layer names and press <SPC f e R> (Vim style) or
@@ -40,6 +45,7 @@ values."
      ;; ----------------------------------------------------------------
      nlinum
      ivy
+     sourcetrail
      auto-completion
      ;; better-defaults
      emacs-lisp
@@ -52,9 +58,11 @@ values."
      ;; spell-checking
      syntax-checking
      ;; version-control
+     (ycmd :variables ycmd-global-config "~/.home/ycmd_config/global_conf.py")
      (c-c++ :variables c-c++-default-mode-for-headers 'c++-mode)
-     ycmd
      rtags
+     ;common-lisp
+     ;lsp
      )
    ;; List of additional packages that will be installed without being
    ;; wrapped in a layer. If you need some configuration for these
@@ -83,7 +91,7 @@ values."
   ;; This setq-default sexp is an exhaustive list of all the supported
   ;; spacemacs settings.
   (setq-default
-   ;; If non nil ELPA repositories are contacted via HTTPS whenever it's
+   ;; If non nil ELPA repfalseositories are contacted via HTTPS whenever it's
    ;; possible. Set it to nil if you have no way to use HTTPS in your
    ;; environment, otherwise it is strongly recommended to let it set to t.
    ;; This variable has no effect if Emacs is launched with the parameter
@@ -253,7 +261,8 @@ values."
    ;; when it reaches the top or bottom of the screen. (default t)
    dotspacemacs-smooth-scrolling nil
    ;; Control line numbers activation.
-   ;; If set to `t' or `relative' line numbers are turned on in all `prog-mode' and ;; `text-mode' derivatives. If set to `relative', line numbers are relative.
+   ;; If set to `t' or `relative' line numbers are turned on in all `prog-mode' and
+   ;; `text-mode' derivatives. If set to `relative', line numbers are relative.
    ;; This variable can also be set to a property list for finer control:
    ;; '(:relative nil
    ;;   :disabled-for-modes dired-mode
@@ -335,15 +344,16 @@ you should place your code here."
   ; YCMD configuration
   (setq ycmd-server-command
         '("/usr/bin/python"
-          "/Users/mpilman/.home/vim/.vim/bundle/YouCompleteMe/third_party/ycmd/ycmd"))
+          "/Users/mpilman/software/src/ycmd/ycmd"))
   (set-variable 'ycmd-extra-conf-whitelist '("~/Projects/*"))
+
+                                        ; Python configurations
+  (setq python-shell-interpreter "ipython3")
 
   ; don't indent namespaces in C/C++
   (c-set-offset 'innamespace 0)
 
   ; some useful key bindings
-  (spacemacs/set-leader-keys-for-major-mode 'c++-mode "=" 'clang-format-buffer)
-  (spacemacs/set-leader-keys-for-major-mode 'c-mode "Y" 'ycmd-completer)
   (define-key evil-normal-state-map "H" "^")
   (define-key evil-normal-state-map "L" "$")
 
@@ -367,7 +377,8 @@ you should place your code here."
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (web-beautify livid-mode skewer-mode simple-httpd json-mode json-snatcher json-reformat js2-refactor multiple-cursors js2-mode js-doc company-tern dash-functional tern coffee-mode company-irony irony reveal-in-osx-finder pbcopy osx-trash osx-dictionary launchctl ivy-rtags realgud test-simple loc-changes load-relative yapfify pyvenv pytest pyenv-mode py-isort pip-requirements live-py-mode hy-mode cython-mode company-anaconda anaconda-mode pythonic emojify circe oauth2 websocket ht rtags nlinum-relative nlinum smeargle orgit org-projectile org-present org-pomodoro alert log4e gntp org-download magit-gitflow htmlize gnuplot gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link fuzzy flycheck-ycmd flycheck-pos-tip pos-tip flycheck evil-magit magit magit-popup git-commit with-editor disaster company-ycmd ycmd request-deferred let-alist deferred company-statistics company-c-headers company cmake-mode clang-format auto-yasnippet yasnippet ac-ispell auto-complete ws-butler winum which-key wgrep volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline powerline smex restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox spinner org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint ivy-hydra info+ indent-guide hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation hide-comnt help-fns+ helm-make helm helm-core google-translate golden-ratio flx-ido flx fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-ediff evil-args evil-anzu anzu evil goto-chg eval-sexp-fu highlight elisp-slime-nav dumb-jump popup diminish define-word counsel-projectile projectile pkg-info epl counsel swiper column-enforce-mode clean-aindent-mode bind-map bind-key auto-highlight-symbol auto-compile packed ace-link undo-tree org-plus-contrib ivy hydra evil-unimpaired f s dash async aggressive-indent adaptive-wrap ace-window avy))))
+    (flycheck-rtags ghub sourcetrail helm-themes helm-swoop helm-pydoc helm-projectile helm-mode-manager helm-gitignore helm-flx helm-descbinds helm-css-scss helm-company helm-c-yasnippet helm-ag ace-jump-helm-line web-mode tagedit slim-mode scss-mode sass-mode pug-mode less-css-mode haml-mode emmet-mode company-web web-completion-data tide typescript-mode company-lsp lsp-mode hyperbole toml-mode racer flycheck-rust seq cargo rust-mode slime-company slime common-lisp-snippets org-category-capture rvm ruby-tools ruby-test-mode rubocop rspec-mode robe rbenv rake minitest enh-ruby-mode chruby bundler inf-ruby company-auctex auctex-latexmk auctex web-beautify livid-mode skewer-mode simple-httpd json-mode json-snatcher json-reformat js2-refactor multiple-cursors js2-mode js-doc company-tern dash-functional tern coffee-mode company-irony irony reveal-in-osx-finder pbcopy osx-trash osx-dictionary launchctl ivy-rtags realgud test-simple loc-changes load-relative yapfify pyvenv pytest pyenv-mode py-isort pip-requirements live-py-mode hy-mode cython-mode company-anaconda anaconda-mode pythonic emojify circe oauth2 websocket ht rtags nlinum-relative nlinum smeargle orgit org-projectile org-present org-pomodoro alert log4e gntp org-download magit-gitflow htmlize gnuplot gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link fuzzy flycheck-ycmd flycheck-pos-tip pos-tip flycheck evil-magit magit magit-popup git-commit with-editor disaster company-ycmd ycmd request-deferred let-alist deferred company-statistics company-c-headers company cmake-mode clang-format auto-yasnippet yasnippet ac-ispell auto-complete ws-butler winum which-key wgrep volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline powerline smex restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox spinner org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint ivy-hydra info+ indent-guide hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation hide-comnt help-fns+ helm-make helm helm-core google-translate golden-ratio flx-ido flx fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-ediff evil-args evil-anzu anzu evil goto-chg eval-sexp-fu highlight elisp-slime-nav dumb-jump popup diminish define-word counsel-projectile projectile pkg-info epl counsel swiper column-enforce-mode clean-aindent-mode bind-map bind-key auto-highlight-symbol auto-compile packed ace-link undo-tree org-plus-contrib ivy hydra evil-unimpaired f s dash async aggressive-indent adaptive-wrap ace-window avy)))
+ '(safe-local-variable-values (quote ((TeX-master . t)))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
