@@ -315,6 +315,8 @@ executes.
  This function is mostly useful for variables that need to be set
 before packages are loaded. If you are unsure, you should try in setting them in
 `dotspacemacs/user-config' first."
+  (add-to-list 'tramp-default-proxies-alist
+               '("10.180.1.232" "mpilman" "/ssh:bastion:"))
   )
 
 (defun my-setup-indent (n)
