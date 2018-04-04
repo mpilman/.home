@@ -42,11 +42,6 @@ Plugin 'eagletmt/ghcmod-vim.git'
 Plugin 'Twinside/vim-hoogle'
 Plugin 'lyuts/vim-rtags'
 Plugin 'chiel92/vim-autoformat'
-if has('nvim')
-  Plugin 'arakashic/chromatica.nvim'
-else
-  Plugin 'jeaye/color_coded'
-endif
 Plugin 'CoatiSoftware/vim-sourcetrail'
 
 call vundle#end()            " required
