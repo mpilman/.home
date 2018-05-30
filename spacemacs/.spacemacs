@@ -44,7 +44,7 @@ This function should only modify configuration layer settings."
      ;; ----------------------------------------------------------------
      nlinum
      ivy
-     sourcetrail
+     ;sourcetrail
      auto-completion
      ;; better-defaults
      emacs-lisp
@@ -60,9 +60,11 @@ This function should only modify configuration layer settings."
      version-control
      ;(ycmd :variables ycmd-global-config "~/.home/ycmd_config/global_conf.py")
      cmake
-     (c-c++ :variables c-c++-default-mode-for-headers 'c++-mode)
+     (c-c++ :variables c-c++-default-mode-for-headers 'c++-mode c-c++-enable-c++11 t)
      (cquery :variables cquery-binary "/usr/local/bin/cquery")
      csharp
+     themes-megapack
+     theming
      )
    ;; List of additional packages that will be installed without being
    ;; wrapped in a layer. If you need some configuration for these
@@ -157,7 +159,8 @@ values."
    ;; List of themes, the first of the list is loaded when spacemacs starts.
    ;; Press <SPC> T n to cycle to the next theme in the list (works great
    ;; with 2 themes variants, one dark and one light)
-   dotspacemacs-themes '(spacemacs-dark
+   dotspacemacs-themes '(doom-one
+                         spacemacs-dark
                          spacemacs-light)
 
    ;; Set the theme for the Spaceline. Supported themes are `spacemacs',
@@ -167,7 +170,8 @@ values."
    ;; to create your own spaceline theme. Value can be a symbol or list with\
    ;; additional properties.
    ;; (default '(spacemacs :separator wave :separator-scale 1.5))
-   dotspacemacs-mode-line-theme '(spacemacs :separator wave :separator-scale 1.5)
+   ;dotspacemacs-mode-line-theme '(spacemacs :separator wave :separator-scale 1.5)
+   dotspacemacs-mode-line-theme 'all-the-icons
 
    ;; If non-nil the cursor color matches the state color in GUI Emacs.
    ;; (default t)
@@ -389,7 +393,7 @@ values."
    ;; %z - mnemonics of buffer, terminal, and keyboard coding systems
    ;; %Z - like %z, but including the end-of-line format
    ;; (default "%I@%S")
-   dotspacemacs-frame-title-format "%I@%S"
+   dotspacemacs-frame-title-format "%I - [%t] %a"
 
    ;; Format specification for setting the icon title format
    ;; (default nil - same as frame-title-format)
@@ -417,8 +421,8 @@ executes.
  This function is mostly useful for variables that need to be set
 before packages are loaded. If you are unsure, you should try in setting them in
 `dotspacemacs/user-config' first."
-  (add-to-list 'tramp-default-proxies-alist
-               '("10.180.1.232" "mpilman" "/ssh:bastion:"))
+  ; (add-to-list 'tramp-default-proxies-alist
+  ;              '("10.180.1.232" "mpilman" "/ssh:bastion:"))
   )
 
 (defun my-setup-indent (n)
@@ -445,6 +449,22 @@ you should place your code here."
 
   ; Disable warning at startup.
   (setq exec-path-from-shell-check-startup-files nil)
+
+                                        ; appearance
+  (when (string-equal system-type "darwin")
+    (progn
+      (add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
+      (add-to-list 'default-frame-alist '(ns-appearance . dark))
+      )
+    )
+
+  (setq theming-modifications
+        '((doom-one
+           (doom-modeline-bar :background "#F92672")
+           (doom-modeline-bracket :foreground "#BDBAAD")
+           (doom-modeline-panel :background "#F92672")
+           (doom-modeline-persp :foreground "#F8F8F2")
+           (spacemacs-normal-face :background "#F92672"))))
 
   ;; YCMD configuration
   ;(setq ycmd-server-command
@@ -529,8 +549,9 @@ This function is called at the very end of Spacemacs initialization."
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(yasnippet-snippets symon string-inflection spaceline-all-the-icons all-the-icons memoize ruby-refactor ruby-hash-syntax pippel pipenv password-generator overseer org-brain nameless lsp-ui markdown-mode lsp-python ivy-xref ivy-purpose window-purpose importmagic epc ctable concurrent impatient-mode google-c-style git-gutter-fringe+ git-gutter-fringe fringe-helper git-gutter+ git-gutter evil-org evil-lion evil-cleverparens paredit editorconfig diff-hl cquery counsel-css company-rtags cmake-ide levenshtein centered-cursor-mode browse-at-remote font-lock+ org-mime fsm go-guru go-eldoc company-go go-mode imenu-list dash-at-point counsel-dash helm-dash omnisharp shut-up csharp-mode flycheck-rtags ghub sourcetrail helm-themes helm-swoop helm-pydoc helm-projectile helm-mode-manager helm-gitignore helm-flx helm-descbinds helm-css-scss helm-company helm-c-yasnippet helm-ag ace-jump-helm-line web-mode tagedit slim-mode scss-mode sass-mode pug-mode less-css-mode haml-mode emmet-mode company-web web-completion-data tide typescript-mode company-lsp lsp-mode hyperbole toml-mode racer flycheck-rust seq cargo rust-mode slime-company slime common-lisp-snippets org-category-capture rvm ruby-tools ruby-test-mode rubocop rspec-mode robe rbenv rake minitest enh-ruby-mode chruby bundler inf-ruby company-auctex auctex-latexmk auctex web-beautify livid-mode skewer-mode simple-httpd json-mode json-snatcher json-reformat js2-refactor multiple-cursors js2-mode js-doc company-tern dash-functional tern coffee-mode company-irony irony reveal-in-osx-finder pbcopy osx-trash osx-dictionary launchctl ivy-rtags realgud test-simple loc-changes load-relative yapfify pyvenv pytest pyenv-mode py-isort pip-requirements live-py-mode hy-mode cython-mode company-anaconda anaconda-mode pythonic emojify circe oauth2 websocket ht rtags nlinum-relative nlinum smeargle orgit org-projectile org-present org-pomodoro alert log4e gntp org-download magit-gitflow htmlize gnuplot gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link fuzzy flycheck-ycmd flycheck-pos-tip pos-tip flycheck evil-magit magit magit-popup git-commit with-editor disaster company-ycmd ycmd request-deferred let-alist deferred company-statistics company-c-headers company cmake-mode clang-format auto-yasnippet yasnippet ac-ispell auto-complete ws-butler winum which-key wgrep volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline powerline smex restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox spinner org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint ivy-hydra info+ indent-guide hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation hide-comnt help-fns+ helm-make helm helm-core google-translate golden-ratio flx-ido flx fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-ediff evil-args evil-anzu anzu evil goto-chg eval-sexp-fu highlight elisp-slime-nav dumb-jump popup diminish define-word counsel-projectile projectile pkg-info epl counsel swiper column-enforce-mode clean-aindent-mode bind-map bind-key auto-highlight-symbol auto-compile packed ace-link undo-tree org-plus-contrib ivy hydra evil-unimpaired f s dash async aggressive-indent adaptive-wrap ace-window avy))
- '(safe-local-variable-values '((TeX-master . t))))
+   (quote
+    (solarized-theme org-brain lsp-ui lsp-javascript-typescript kaolin-themes ivy-xref impatient-mode gruber-darker-theme doom-themes cmake-ide markdown-mode window-purpose org-mime fsm go-guru go-eldoc company-go go-mode imenu-list dash-at-point counsel-dash helm-dash omnisharp shut-up csharp-mode flycheck-rtags ghub sourcetrail helm-themes helm-swoop helm-pydoc helm-projectile helm-mode-manager helm-gitignore helm-flx helm-descbinds helm-css-scss helm-company helm-c-yasnippet helm-ag ace-jump-helm-line web-mode tagedit slim-mode scss-mode sass-mode pug-mode less-css-mode haml-mode emmet-mode company-web web-completion-data tide typescript-mode company-lsp lsp-mode hyperbole toml-mode racer flycheck-rust seq cargo rust-mode slime-company slime common-lisp-snippets org-category-capture rvm ruby-tools ruby-test-mode rubocop rspec-mode robe rbenv rake minitest enh-ruby-mode chruby bundler inf-ruby company-auctex auctex-latexmk auctex web-beautify livid-mode skewer-mode simple-httpd json-mode json-snatcher json-reformat js2-refactor multiple-cursors js2-mode js-doc company-tern dash-functional tern coffee-mode company-irony irony reveal-in-osx-finder pbcopy osx-trash osx-dictionary launchctl ivy-rtags realgud test-simple loc-changes load-relative yapfify pyvenv pytest pyenv-mode py-isort pip-requirements live-py-mode hy-mode cython-mode company-anaconda anaconda-mode pythonic emojify circe oauth2 websocket ht rtags nlinum-relative nlinum smeargle orgit org-projectile org-present org-pomodoro alert log4e gntp org-download magit-gitflow htmlize gnuplot gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link fuzzy flycheck-ycmd flycheck-pos-tip pos-tip flycheck evil-magit magit magit-popup git-commit with-editor disaster company-ycmd ycmd request-deferred let-alist deferred company-statistics company-c-headers company cmake-mode clang-format auto-yasnippet yasnippet ac-ispell auto-complete ws-butler winum which-key wgrep volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline powerline smex restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox spinner org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint ivy-hydra info+ indent-guide hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation hide-comnt help-fns+ helm-make helm helm-core google-translate golden-ratio flx-ido flx fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-ediff evil-args evil-anzu anzu evil goto-chg eval-sexp-fu highlight elisp-slime-nav dumb-jump popup diminish define-word counsel-projectile projectile pkg-info epl counsel swiper column-enforce-mode clean-aindent-mode bind-map bind-key auto-highlight-symbol auto-compile packed ace-link undo-tree org-plus-contrib ivy hydra evil-unimpaired f s dash async aggressive-indent adaptive-wrap ace-window avy)))
+ '(safe-local-variable-values (quote ((TeX-master . t)))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
