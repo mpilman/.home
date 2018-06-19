@@ -30,6 +30,10 @@
 (setq doom-line-numbers-style 'relative)
 
 ;;
+;; C++
+;;
+
+;;
 ;; Key bindings
 ;;
 (map!
@@ -48,8 +52,36 @@
    (:localleader
      :desc "Find Symbol"     :n "s" #'lsp-ui-peek-find-workspace-symbol
      :desc "Find References" :n "r" #'lsp-ui-peek-find-references
+     :desc "Rename Symbol"   :n "R" #'lsp-rename
      :desc "Codeaction"      :n "a" #'lsp-ui-sideline-apply-code-actions
      :desc "Find definition" :n "g" #'xref-find-definitions))
+ (:after logview :map logview-mode-map
+   (:localleader
+     (:desc "Narrow" :prefix "n"
+       :desc "Up to" :n "u" #'logview-narrow-up-to-this-entry
+       :desc "From"  :n "f" #'logview-narrow-from-this-entry)
+     (:desc "Level filtering" :prefix "l"
+       :desc "Error"    :n "e" #'logview-show-only-errors
+       :desc "Warnings" :n "w" #'logview-show-errors-and-warnings
+       :desc "Info"     :n "i" #'logview-show-errors-warnings-and-information
+       :desc "All"      :n "a" #'logview-show-all-levels)
+     (:desc "General Filters" :prefix "f"
+       :desc "Edit"         :n "e" #'logview-edit-filters
+       :desc "Include Name" :n "n" #'logview-add-include-name-filter
+       :desc "Exclude Name" :n "N" #'logview-add-exclude-name-filter
+       :desc "Include Msg"  :n "m" #'logview-add-include-message-filter
+       :desc "Exclude Msg"  :n "M" #'logview-add-exclude-message-filter
+       :desc "Include Thd"  :n "t" #'logview-add-include-thread-filter
+       :desc "Exclude Thd"  :n "T" #'logview-add-exclude-thread-filter)
+     (:desc "Views" :prefix "v"
+       :desc "Switch to"   :n "s" #'logview-switch-to-view
+       :desc "Delete view" :n "x" #'logview-delete-view
+       :desc "Save view"   :n "w" #'logview-save-filters-as-view-for-submode
+       :desc "Edit views"  :n "e" #'logview-edit-submode-views
+       :desc "Highlight"   :n "h" #'logview-highlight-view-entries
+       :desc "Unhighlight" :n "H" #'logview-unhighlight-view-entries)
+     :desc "Refresh"   :n "R" #'logview-refresh-buffer-as-needed
+     :desc "Clear All" :n "C" #'+logview/clear-everything))
  )
 
 ; company
@@ -60,6 +92,36 @@
 ; cquery
 (setq cquery-project-roots '("~/Projects/fdb/foundation/")
       cquery-cache-dir "~/.cquery-index")
+
+; python
+(setq python-shell-interpreter "/usr/local/bin/python3")
+
+;;
+;; LogView
+;;
+(defun +logview/clear-everything ()
+  (interactive)
+  (logview-reset-all-filters)
+  (widen))
+
+(add-to-list 'auto-mode-alist '("trace\\..*\\.json\\'" . logview-mode))
+(custom-set-variables
+ '(logview-additional-level-mappings
+   (quote
+    (("FDBLevels"
+      (error "40")
+      (warning "30")
+      (information "20" "10")
+      (debug "5")
+      (trace)
+      (aliases)))))
+ '(logview-additional-submodes
+   (quote
+    (("FDB"
+      (format . "{ \"Severity\": \"LEVEL\", \"Time\": \"IGNORED\", \"ActualTime\": \"TIMESTAMP\", \"Machine\": \"THREAD\", \"Type\": \"NAME\",")
+      (levels . "FDBLevels")
+      (timestamp)
+      (aliases))))))
 
 ;;
 ;; Helper functions

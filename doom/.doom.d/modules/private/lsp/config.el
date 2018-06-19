@@ -50,7 +50,7 @@ compilation database is present in the project.")
   :init
   (setq-default c-basic-offset tab-width
                 c-backspace-function #'delete-backward-char
-                c-default-style "doom")
+                c-default-style "stroustrup")
 
   :config
   (set! :electric '(c-mode c++-mode objc-mode java-mode)
@@ -175,7 +175,25 @@ compilation database is present in the project.")
   :config
   (progn
     (setq lsp-enable-indentation nil)
-    (add-hook! (c-mode c++-mode) 'lsp-mode)))
+    (when (featurep! +cc)
+      (add-hook! (c-mode c++-mode) 'lsp-mode))
+    (when (featurep! +bash)
+      (lsp-define-stdio-client
+       lsp-bash
+       "bash"
+       #'projectile-project-root
+       '("bash-language-server" "start")
+       )
+      (add-hook! sh-mode 'lsp-bash-enable))
+    (when (featurep! +python)
+      (lsp-define-stdio-client
+       lsp-python
+       "python"
+       #'projectile-project-root
+       '("pyls"))
+      (add-hook! python-mode 'lsp-python-enable))
+    )
+  )
 
 (def-package! lsp-ui
   :config
