@@ -32,6 +32,14 @@
 ;;
 ;; C++
 ;;
+(c-add-style
+ "fdb"
+ '("ellemtel"
+   (c-basic-offset . 4)
+   (c-offsets-alist
+    (innamespace . -)
+    )))
+(setq c-default-style "fdb")
 
 ;;
 ;; Key bindings
