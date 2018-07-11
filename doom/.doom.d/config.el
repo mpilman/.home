@@ -30,6 +30,27 @@
 (setq doom-line-numbers-style 'relative)
 
 ;;
+;; Helper functions
+;;
+
+(defun copy-filename-to-clipboard ()
+  (interactive)
+  (let ((filename (if (equal major-mode 'dired-mode)
+                      default-directory
+                    (file-name-nondirectory (buffer-file-name)))))
+    (when filename
+      (kill-new filename)
+      (message "Copied buffer file name '%s' to the clipboard." filename))))
+
+(defun generate-file-identifier ()
+  (interactive)
+  (let ((val (random (expt 2 32))))
+    (end-of-line)
+    (newline-and-indent)
+    (insert (format "constexpr static flat_buffers::FileIdentifier file_identifier = flat_buffers::fileIdentifier(%d);" val))
+    ))
+
+;;
 ;; C++
 ;;
 (c-add-style
@@ -54,7 +75,9 @@
    (:desc "Search" :prefix "s"
      :desc "Clear"  :n "c" #'evil-ex-nohighlight
      :desc "Search" :n "s" #'swiper
-     :desc "Grep"   :n "g" #'counsel-projectile-rg))
+     :desc "Grep"   :n "g" #'counsel-projectile-rg)
+   (:desc "buffer" :prefix "b"
+     :desc "Copy Name" :n "c" #'copy-filename-to-clipboard))
  ; lsp
  (:after lsp-ui :map lsp-ui-mode-map
    (:localleader
