@@ -54,12 +54,7 @@ if [ -d $HOME/.cargo/bin ]; then PATH=$HOME/.cargo/bin:$PATH; fi # if cargo is u
 if [ -e $HOME/Projects/rustc-1.9.0 ]; then export RUST_SRC_PATH=$HOME/Projects/rustc-1.9.0/src; fi
 
 EDITOR=emacs
-if [ -d /Applications/Emacs.app/ ]
-then
-    EDITOR=/Applications/Emacs.app/Contents/MacOS/bin/emacsclient
-else
-    EDITOR=emacsclient
-fi
+
 export PATH
 export EDITOR
 
