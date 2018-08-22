@@ -40,6 +40,7 @@
       ;unicode           ; extended unicode support for various languages
        vi-tilde-fringe   ; fringe tildes to mark beyond EOB
        window-select     ; visually switch windows
+       ;pretty-code       ; prettify code
 
        :emacs
        dired             ; making dired pretty [functional]
@@ -135,5 +136,8 @@
        (lsp
         +cc
         ;+bash
-        +python)
-       logview)
+        +java
+        +python
+        +haskell)
+       logview
+       magit-todos)

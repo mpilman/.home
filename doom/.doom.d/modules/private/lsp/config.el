@@ -53,10 +53,7 @@ compilation database is present in the project.")
                 c-default-style "stroustrup")
 
   :config
-  (set! :electric '(c-mode c++-mode objc-mode java-mode)
-    :chars '(?\n ?\}))
-  (set! :company-backend
-    '(c-mode c++-mode objc-mode))
+  (set-electric! '(c-mode c++-mode objc-mode java-mode) :chars '(?\n ?\}))
 
   ;;; Style/formatting
   ;; C/C++ style settings
@@ -147,7 +144,7 @@ compilation database is present in the project.")
 (def-package! cmake-mode
   :defer t
   :config
-  (set! :company-backend 'cmake-mode '(company-cmake company-yasnippet)))
+  (set-company-backend! 'cmake-mode '(company-cmake company-yasnippet)))
 
 (def-package! demangle-mode :hook llvm-mode)
 
@@ -162,10 +159,23 @@ compilation database is present in the project.")
 
 (def-package! company-lsp
   :config
-  (setq company-transformers nil
-        company-lsp-async t
-        company-lsp-cache-candidates nil)
-  (push 'company-lsp company-backends))
+  (progn
+    (setq company-transformers nil
+          company-lsp-async t
+          company-lsp-enable-snippet nil
+          company-lsp-cache-candidates nil)
+    (when (featurep! +cc)
+      (set-company-backend! '(c-mode c++-mode objc-mode) 'company-lsp))
+    (when (featurep! +bash)
+      (set-company-backend! 'sh-mode 'company-lsp))
+    (when (featurep! +java)
+      (set-company-backend! 'java-mode 'company-lsp))
+    (when (featurep! +python)
+      (set-company-backend! 'python-mode 'company-lsp))
+    (when (featurep! +haskell)
+      (set-company-backend! 'haskell-mode 'company-lsp))
+    )
+  )
 
 ;;
 ;; LSP
@@ -174,7 +184,7 @@ compilation database is present in the project.")
 (def-package! lsp-mode
   :config
   (progn
-    (setq lsp-enable-indentation nil)
+    ;(setq lsp-enable-indentation nil)
     (when (featurep! +cc)
       (add-hook! (c-mode c++-mode) 'lsp-mode))
     (when (featurep! +bash)
@@ -212,6 +222,20 @@ compilation database is present in the project.")
                                        :completion (:detailedLabel t)))
     (add-hook! (c-mode c++-mode) 'lsp-cquery-enable)))
 
-(def-package! yasnippet
+(def-package! lsp-haskell
   :config
-  (add-hook! (c-mode c++-mode) 'yas-minor-mode))
+  (progn
+    (add-hook! haskell-mode '(lsp-haskell-enable flycheck-mode))
+    )
+  )
+
+(defun +java-lsp-config ()
+    (setq lsp-inhibit-message t)
+    (setq lsp-ui-sideline-update-mode 'point)
+  )
+
+(def-package! lsp-java
+  :config
+  (progn
+    (setq lsp-java-server-install-dir "/Users/mpilman/Projects/jdt.eclipde")
+    (add-hook! java-mode '(lsp-java-enable +java-lsp-config))))

@@ -4,8 +4,8 @@
 (package! lsp-mode)
 (package! lsp-ui)
 (package! company-lsp)
-(package! yasnippet)
 (when (featurep! +cc)
+  (depends-on! :feature snippets)
   (package! cmake-mode)
   (package! cuda-mode)
   (package! demangle-mode)
@@ -13,4 +13,8 @@
   (package! modern-cpp-font-lock)
   (package! clang-format)
   (package! cquery))
+(when (featurep! +java)
+  (package! lsp-java))
+(when (featurep! +haskell)
+  (package! lsp-haskell))
 

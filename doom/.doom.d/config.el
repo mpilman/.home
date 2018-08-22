@@ -44,11 +44,27 @@
 
 (defun generate-file-identifier ()
   (interactive)
-  (let ((val (random (expt 2 32))))
+  (let ((val (random (expt 2 24))))
     (end-of-line)
     (newline-and-indent)
-    (insert (format "constexpr static flat_buffers::FileIdentifier file_identifier = flat_buffers::fileIdentifier(%d);" val))
+    (insert (format "constexpr static flat_buffers::FileIdentifier file_identifier = %d;" val))
     ))
+
+(defun generate-file-identifier-for-fake-root ()
+  (interactive)
+  (let ((val (random (expt 2 24))))
+    (save-excursion
+      (beginning-of-line)
+      (search-forward "serializer(")
+      (replace-match "serialize_fake_root(")
+      (search-forward ",")
+      (replace-match (format ", %d," val))
+      )
+    ))
+
+(defun insert-random-file-id ()
+  (interactive)
+  (insert (format "%d" (random (expt 2 24)))))
 
 ;;
 ;; C++
@@ -61,6 +77,12 @@
     (innamespace . -)
     )))
 (setq c-default-style "fdb")
+
+;;
+;; Java
+;;
+(setq lsp-java--workspace-folders (list "/Users/mpilman/Snowflake/trunk"
+                                        "/Users/mpilman/Projects/testjava"))
 
 ;;
 ;; Key bindings
@@ -78,7 +100,12 @@
      :desc "Grep"   :n "g" #'counsel-projectile-rg)
    (:desc "buffer" :prefix "b"
      :desc "Copy Name" :n "c" #'copy-filename-to-clipboard))
+ ; c/c++
  ; lsp
+ (:mode (c-mode c++-mode)
+   (:localleader
+     :desc "Gen Fake-Root"  :n "f" #'generate-file-identifier-for-fake-root
+     :desc "Gen FileId"     :n "i" #'generate-file-identifier))
  (:after lsp-ui :map lsp-ui-mode-map
    (:localleader
      :desc "Find Symbol"     :n "s" #'lsp-ui-peek-find-workspace-symbol
