@@ -12,7 +12,6 @@
        ;spellcheck        ; tasing you for misspelling mispelling
        (syntax-checker   ; tasing you for every semicolon you forget
         +childframe)     ; use childframes for error popups (Emacs 26+ only)
-       version-control   ; remember, remember that commit in November
        workspaces        ; tab emulation, persistence & separate workspaces
 
        :completion
@@ -41,14 +40,16 @@
        vi-tilde-fringe   ; fringe tildes to mark beyond EOB
        window-select     ; visually switch windows
        ;pretty-code       ; prettify code
+       vc-gutter         ; git gutter
 
        :emacs
        dired             ; making dired pretty [functional]
        ediff             ; comparing files in Emacs
-       electric-indent   ; smarter, keyword-based electric-indent
+       electric          ; smarter, keyword-based electric-indent
        eshell            ; a consistent, cross-platform shell (WIP)
        imenu             ; an imenu sidebar and searchable code index
       ;term              ; terminals in Emacs
+       vc                ; version control
 
        :tools
        editorconfig      ; let someone else argue about tabs vs spaces
@@ -61,7 +62,6 @@
        ;pdf               ; pdf enhancements
       ;prodigy           ; FIXME managing external services & code builders
       ;rgb               ; creating color strings
-       rotate-text       ; cycle region at point between text candidates
        ;tmux              ; an API for interacting with tmux
        upload            ; map local to remote projects via ssh/ftp
 
@@ -138,6 +138,7 @@
         ;+bash
         +java
         +python
-        +haskell)
+        +haskell
+        +groovy)
        logview
        magit-todos)

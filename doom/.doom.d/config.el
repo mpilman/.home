@@ -28,6 +28,13 @@
 
 ; general settings
 (setq doom-line-numbers-style 'relative)
+(setq display-line-numbers-type 'relative)
+
+;;
+;; Groovy
+;;
+
+(setq groovy-lang-jar "/Users/mpilman/.m2/repository/com/palantir/ls/groovy-language-server/0.5.5/groovy-language-server-0.5.5-all.jar")
 
 ;;
 ;; Helper functions

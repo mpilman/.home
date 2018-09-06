@@ -148,6 +148,8 @@ compilation database is present in the project.")
 
 (def-package! demangle-mode :hook llvm-mode)
 
+(def-package! groovy-mode
+  :defer t)
 
 ;;
 ;; Company plugins
@@ -162,7 +164,6 @@ compilation database is present in the project.")
   (progn
     (setq company-transformers nil
           company-lsp-async t
-          company-lsp-enable-snippet nil
           company-lsp-cache-candidates nil)
     (when (featurep! +cc)
       (set-company-backend! '(c-mode c++-mode objc-mode) 'company-lsp))
@@ -202,6 +203,14 @@ compilation database is present in the project.")
        #'projectile-project-root
        '("pyls"))
       (add-hook! python-mode 'lsp-python-enable))
+    (when (featurep! +groovy)
+      (when (featurep! +groovy-lsp)
+        (lsp-define-stdio-client
+         lsp-groovy
+         "groovy"
+         #'projectile-project-root
+         (list "java" "-jar" groovy-lang-jar))
+        (add-hook! groovy-mode 'lsp-groovy-enable)))
     )
   )
 

@@ -17,4 +17,6 @@
   (package! lsp-java))
 (when (featurep! +haskell)
   (package! lsp-haskell))
+(when (featurep! +groovy)
+  (package! groovy-mode))
 
