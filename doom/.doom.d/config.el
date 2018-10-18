@@ -120,7 +120,7 @@
      :desc "Rename Symbol"   :n "R" #'lsp-rename
      :desc "Codeaction"      :n "a" #'lsp-ui-sideline-apply-code-actions
      :desc "Find definition" :n "g" #'xref-find-definitions))
- (:after logview :map logview-mode-map
+ (:mode logview-mode
    (:localleader
      (:desc "Narrow" :prefix "n"
        :desc "Up to" :n "u" #'logview-narrow-up-to-this-entry
