@@ -128,14 +128,25 @@ compilation database is present in the project.")
 
 (def-package! disaster :commands disaster)
 
+(add-to-list 'load-path "~/.doom.d/modules/private/lsp/library")
+(load "local-cf")
+
+(defun +cc-clang/format-changes-on-save ()
+  (add-hook 'local-cf-hook 'clang-format-region t))
+
 (def-package! clang-format
   :config
-  (add-hook! 'before-save-hook '+cc-clang-format/format-on-save)
-  )
+  (add-hook! (c-mode c++-mode) 'local-cf-mode)
+  (add-hook! (c-mode c++-mode) #'+cc-clang/format-changes-on-save))
 
 (defun +cc-clang-format/format-on-save ()
   (when (or (eq major-mode 'c-mode) (eq major-mode 'c++-mode))
-    (clang-format-buffer)))
+    (message "Running clang format on edits...")
+    (let ((beg (point-min)) end)
+      (while (setq end (next-single-property-change beg 'hilit-chg))
+        (setq beg (next-single-property-change end 'hilit-chg))
+        (message "Run clang-format")
+        (clang-format-region beg end)))))
 
 ;;
 ;; Major modes
@@ -165,16 +176,7 @@ compilation database is present in the project.")
     (setq company-transformers nil
           company-lsp-async t
           company-lsp-cache-candidates nil)
-    (when (featurep! +cc)
-      (set-company-backend! '(c-mode c++-mode objc-mode) 'company-lsp))
-    (when (featurep! +bash)
-      (set-company-backend! 'sh-mode 'company-lsp))
-    (when (featurep! +java)
-      (set-company-backend! 'java-mode 'company-lsp))
-    (when (featurep! +python)
-      (set-company-backend! 'python-mode 'company-lsp))
-    (when (featurep! +haskell)
-      (set-company-backend! 'haskell-mode 'company-lsp))
+    (set-company-backend! 'lsp-mode 'company-lsp)
     )
   )
 
@@ -187,54 +189,32 @@ compilation database is present in the project.")
   (progn
     ;(setq lsp-enable-indentation nil)
     (when (featurep! +cc)
-      (add-hook! (c-mode c++-mode) 'lsp-mode))
+      (add-hook! (c-mode c++-mode) 'lsp))
     (when (featurep! +bash)
-      (lsp-define-stdio-client
-       lsp-bash
-       "bash"
-       #'projectile-project-root
-       '("bash-language-server" "start")
-       )
-      (add-hook! sh-mode 'lsp-bash-enable))
+      (add-hook! sh-mode 'lsp))
     (when (featurep! +python)
-      (lsp-define-stdio-client
-       lsp-python
-       "python"
-       #'projectile-project-root
-       '("pyls"))
-      (add-hook! python-mode 'lsp-python-enable))
+      (add-hook! python-mode 'lsp))
     (when (featurep! +groovy)
       (when (featurep! +groovy-lsp)
-        (lsp-define-stdio-client
-         lsp-groovy
-         "groovy"
-         #'projectile-project-root
-         (list "java" "-jar" groovy-lang-jar))
-        (add-hook! groovy-mode 'lsp-groovy-enable)))
+        (add-hook! groovy-mode 'lsp)))
     )
   )
 
 (def-package! lsp-ui
   :config
   (progn
-    (add-hook! (c-mode c++-mode) 'flycheck-mode)
-    (add-hook! lsp-mode 'lsp-ui-mode)))
+    (setq-default flycheck-disabled-checkers '(c/c++-clang c/c++-cppcheck c/c++-gcc))
+    (add-hook! lsp-mode 'lsp-ui-mode)
+    (add-hook! lsp-mode 'flycheck-mode)))
 
-(def-package! cquery
+(def-package! ccls
   :config
-  (progn
-    (setq
-     cquery-executable "/usr/local/bin/cquery"
-     cquery-extra-args '("--log-file=/tmp/cq.log")
-     cquery-extra-init-params '(:index (:comments 2)
-                                       :cacheFormat "msgpack"
-                                       :completion (:detailedLabel t)))
-    (add-hook! (c-mode c++-mode) 'lsp-cquery-enable)))
+  (setq ccls-executable "/usr/local/bin/ccls"))
 
 (def-package! lsp-haskell
   :config
   (progn
-    (add-hook! haskell-mode '(lsp-haskell-enable flycheck-mode))
+    (add-hook! haskell-mode 'flycheck-mode)
     )
   )
 

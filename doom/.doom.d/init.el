@@ -67,7 +67,7 @@
 
        :lang
        assembly          ; assembly for fun or debugging
-       ;cc                ; C/C++/Obj-C madness
+       cc                ; C/C++/Obj-C madness
       ;crystal           ; ruby at the speed of c
       ;clojure           ; java with a lisp
       common-lisp
@@ -78,7 +78,7 @@
       ;elm               ; care for a cup of TEA?
        emacs-lisp        ; drown in parentheses
       ;ess               ; emacs speaks statistics
-      ;go                ; the hipster dialect
+      go                ; the hipster dialect
       ;(haskell +intero) ; a language that's lazier than I am
       ;hy                ; readability of scheme w/ speed of python
       ;(java +meghanada) ; the poster child for carpal tunnel syndrome
@@ -89,7 +89,7 @@
       ;lua               ; one-based indices? one-based indices
        markdown          ; writing docs for people to ignore
       ;nim               ; python + lisp at the speed of c
-      ;nix               ; I hereby declare "nix geht mehr!"
+      nix               ; I hereby declare "nix geht mehr!"
       ;ocaml             ; an objective camel
        (org              ; organize your plain life in plain text
         ;+attach          ; custom attachment system
@@ -141,5 +141,4 @@
         +python
         +haskell
         +groovy)
-       logview
-       magit-todos)
+       logview)

@@ -31,6 +31,11 @@
 (setq display-line-numbers-type 'relative)
 
 ;;
+;; Magit
+;;
+(setenv "EDITOR" "/usr/local/Cellar/emacs-plus/26.1/bin/emacsclient")
+
+;;
 ;; Groovy
 ;;
 
@@ -54,7 +59,7 @@
   (let ((val (random (expt 2 24))))
     (end-of-line)
     (newline-and-indent)
-    (insert (format "constexpr static flat_buffers::FileIdentifier file_identifier = %d;" val))
+    (insert (format "constexpr static FileIdentifier file_identifier = %d;" val))
     ))
 
 (defun generate-file-identifier-for-fake-root ()
@@ -155,8 +160,10 @@
       company-minimum-prefix-length 3)
 
 ; cquery
-(setq cquery-project-roots '("~/Projects/fdb/foundation/")
+(setq cquery-project-roots '("~/Projects/fdb/foundation/" "~/Projects/foundation/")
       cquery-cache-dir "~/.cquery-index")
+
+(setq lsp-print-io t)
 
 ; python
 (setq python-shell-interpreter "/usr/local/bin/python3")

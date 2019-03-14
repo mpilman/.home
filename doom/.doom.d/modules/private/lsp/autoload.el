@@ -39,7 +39,6 @@ preceded by the opening brace or a comma (disregarding whitespace in between)."
             (memq (char-before) (list ?, ?\( ?\;))))
     (c-lineup-arglist langlem)))
 
-
 ;;
 ;; Hooks
 ;;

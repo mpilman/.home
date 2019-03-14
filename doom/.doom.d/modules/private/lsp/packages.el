@@ -12,11 +12,10 @@
   (package! disaster)
   (package! modern-cpp-font-lock)
   (package! clang-format)
-  (package! cquery))
+  (package! ccls))
 (when (featurep! +java)
   (package! lsp-java))
 (when (featurep! +haskell)
   (package! lsp-haskell))
 (when (featurep! +groovy)
   (package! groovy-mode))
-
