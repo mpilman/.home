@@ -31,6 +31,20 @@
 (setq display-line-numbers-type 'relative)
 
 ;;
+;; Format
+;;
+(set-formatter!
+ 'clang-format
+ '(\"clang-format\"
+   (\"-assume-filename=%S\" (or buffer-file-name mode-result \"\")))
+ :modes
+ '((c-mode \".c\")
+   (c++-mode \".cpp\")
+   (java-mode \".java\")
+   (objc-mode \".m\")
+   (protobuf-mode \".proto\")))
+
+;;
 ;; Magit
 ;;
 (setenv "EDITOR" "/usr/local/Cellar/emacs-plus/26.1/bin/emacsclient")
@@ -53,6 +67,16 @@
     (when filename
       (kill-new filename)
       (message "Copied buffer file name '%s' to the clipboard." filename))))
+
+(defun copy-filename-and-line-to-clipboard ()
+  (interactive)
+  (let ((filename (if (equal major-mode 'dired-mode)
+                      default-directory
+                    (file-name-nondirectory (buffer-file-name))))
+        (line (string-to-number (format-mode-line "%l"))))
+    (when filename
+      (kill-new (format "%s:%s" filename line))
+      (message "Copied buffer file name '%s:%s' to the clipboard." filename line))))
 
 (defun generate-file-identifier ()
   (interactive)
@@ -111,7 +135,8 @@
      :desc "Search" :n "s" #'swiper
      :desc "Grep"   :n "g" #'counsel-projectile-rg)
    (:desc "buffer" :prefix "b"
-     :desc "Copy Name" :n "c" #'copy-filename-to-clipboard))
+     :desc "Copy Name" :n "c" #'copy-filename-and-line-to-clipboard
+     :desc "Copy Name" :n "y" #'copy-filename-to-clipboard))
  ; c/c++
  ; lsp
  (:mode (c-mode c++-mode)

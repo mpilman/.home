@@ -203,13 +203,26 @@ compilation database is present in the project.")
 (def-package! lsp-ui
   :config
   (progn
+    (setq lsp-prefer-flymake nil)
     (setq-default flycheck-disabled-checkers '(c/c++-clang c/c++-cppcheck c/c++-gcc))
     (add-hook! lsp-mode 'lsp-ui-mode)
     (add-hook! lsp-mode 'flycheck-mode)))
 
-(def-package! ccls
+(def-package! cquery
   :config
-  (setq ccls-executable "/usr/local/bin/ccls"))
+  (progn
+    (setq cquery-executable "/usr/local/bin/cquery")
+    (setq cquery-extra-args '("--log-file=/tmp/cq.log"))
+    (setq cquery-cache-dir "~/.cquery_cached_index")
+    (setq cquery-extra-init-params '(:cacheFormat "msgpack"))
+    )
+  )
+
+(def-package! dap-mode
+  :config
+  (progn
+    (add-hook! lsp-mode '(dap-mode dap-ui-mode))
+    (require 'dap-gdb-lldb)))
 
 (def-package! lsp-haskell
   :config
