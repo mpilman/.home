@@ -46,7 +46,7 @@ alias lldb='PATH=/usr/bin:$PATH lldb'
 
 unalias rm
 
-PATH=/opt/local/bin:/usr/local/bin:/usr/local/sbin:/opt/local/sbin:~/.local/bin:~/bin:$PATH:/Users/mpilman/Applications/SnowSQL.app/Contents/MacOS
+PATH=/opt/local/bin:/usr/local/bin:/usr/local/sbin:/opt/local/sbin:~/.local/bin:~/bin:$PATH:/Users/mpilman/Applications/SnowSQL.app/Contents/MacOS:/usr/local/Cellar/llvm/9.0.0/bin
 export PERL5LIB=~/lib/perl5/site_perl/5.24.1
 if [ -e $HOME/.zsh_local ]; then . $HOME/.zsh_local; fi
 if [ -e /home/vagrant/.nix-profile/etc/profile.d/nix.sh ]; then . /home/vagrant/.nix-profile/etc/profile.d/nix.sh; fi # added by Nix installer

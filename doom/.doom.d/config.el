@@ -45,6 +45,14 @@
    (protobuf-mode \".proto\")))
 
 ;;
+;; Projectile
+;;
+
+(after! projectile
+  (add-to-list 'projectile-globally-ignored-directories ".clangd")
+  (add-to-list 'projectile-globally-ignored-directories "foundation/.clangd"))
+
+;;
 ;; Magit
 ;;
 (setenv "EDITOR" "/usr/local/Cellar/emacs-plus/26.1/bin/emacsclient")
@@ -188,7 +196,8 @@
 (setq cquery-project-roots '("~/Projects/fdb/foundation/" "~/Projects/foundation/")
       cquery-cache-dir "~/.cquery-index")
 
-(setq lsp-print-io t)
+;(setq lsp-print-io t)
+(setq lsp-enable-file-watchers nil)
 
 ; python
 (setq python-shell-interpreter "/usr/local/bin/python3")
