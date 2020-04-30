@@ -40,11 +40,12 @@
        dired             ; making dired pretty [functional]
        ;ediff             ; comparing files in Emacs
        electric          ; smarter, keyword-based electric-indent
-       eshell            ; a consistent, cross-platform shell (WIP)
        format
        imenu             ; an imenu sidebar and searchable code index
       ;term              ; terminals in Emacs
        vc                ; version control
+       :term
+       eshell            ; a consistent, cross-platform shell (WIP)
 
        :tools
        eval              ; run code, run (also, repls)
@@ -54,7 +55,6 @@
       macos             ; MacOS-specific commands
       ;make              ; run make tasks from Emacs
        magit             ;
-       flycheck
       ;password-store    ; password manager for nerds
        ;pdf               ; pdf enhancements
       ;prodigy           ; FIXME managing external services & code builders
@@ -65,6 +65,8 @@
        ; +devdocs         ; ...on devdocs.io online
        ; +docsets)        ; ...or in Dash docsets locally
        lsp
+       :checkers
+       flycheck
 
        :lang
        assembly          ; assembly for fun or debugging
